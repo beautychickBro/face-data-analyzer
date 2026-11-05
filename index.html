@@ -1214,16 +1214,36 @@ select {
       || Number(a.slot) - Number(b.slot);
   }
 
-  function flattenRecords(records) {
+  function getSingleValueIds(recordsA, recordsB = []) {
+    const candidates = new Map();
+    for (const record of [...recordsA, ...recordsB]) {
+      const id = `${record.group}:${record.control}`;
+      if (!fieldMap.has(id) || bilateral.has(record.group)) continue;
+
+      const values = Object.values(record.slots);
+      const sameValue = values.length > 0 && values.every(value => value === values[0]);
+      const wasSingleValue = candidates.get(id) ?? true;
+      candidates.set(id, wasSingleValue && sameValue);
+    }
+
+    return new Set([...candidates].filter(([, singleValue]) => singleValue).map(([id]) => id));
+  }
+
+  function flattenRecords(records, singleValueIds = getSingleValueIds(records)) {
     const rows = [];
     for (const record of records) {
       const id = `${record.group}:${record.control}`;
       const group = groupMap.get(record.group);
       const field = fieldMap.get(id);
+      const singleValue = singleValueIds.has(id);
+      const entries = Object.entries(record.slots);
+      const values = singleValue ? [['value', entries[0][1]]] : entries;
 
-      for (const [slot, value] of Object.entries(record.slots)) {
+      for (const [slot, value] of values) {
         let side = `槽位 ${slot}`;
-        if (field && bilateral.has(record.group) && (slot === '1' || slot === '2')) {
+        if (singleValue) {
+          side = '数值';
+        } else if (field && bilateral.has(record.group) && (slot === '1' || slot === '2')) {
           side = slot === '1' ? '左' : '右';
         }
         rows.push({
@@ -1231,9 +1251,11 @@ select {
           id,
           group: record.group,
           control: record.control,
-          slot,
+          slot: singleValue ? null : slot,
           value,
           side,
+          singleValue,
+          sourceSlots: singleValue ? Object.keys(record.slots) : undefined,
           part: group?.name || `未对应部位 ${record.group}`,
           field: field?.name || `参数 ${record.control}`,
           pending: !field || !!field.reason,
@@ -1246,8 +1268,10 @@ select {
   }
 
   function compareRecords(recordsA, recordsB) {
-    const rowsA = new Map(flattenRecords(recordsA).map(row => [row.key, row]));
-    const rowsB = new Map(flattenRecords(recordsB).map(row => [row.key, row]));
+    // 任一侧内部有不同值时，两侧都保留原槽位，避免合并后丢失差异。
+    const singleValueIds = getSingleValueIds(recordsA, recordsB);
+    const rowsA = new Map(flattenRecords(recordsA, singleValueIds).map(row => [row.key, row]));
+    const rowsB = new Map(flattenRecords(recordsB, singleValueIds).map(row => [row.key, row]));
     const stats = {
       rows: [],
       same: 0,
@@ -1267,6 +1291,8 @@ select {
         ...(rowA || rowB),
         a: rowA?.value,
         b: rowB?.value,
+        sourceSlotsA: rowA?.sourceSlots,
+        sourceSlotsB: rowB?.sourceSlots,
         delta: null,
         absolute: null,
         state: ''
@@ -1353,7 +1379,7 @@ select {
   }
 
   function detailIndicators(rows) {
-    // 统计与报告按槽位计算；表格按指标合并左右槽位。
+    // 单值已合并；左右独立值在同一指标行内并排显示。
     const indicators = new Map();
     for (const row of rows) {
       if (!indicators.has(row.id)) {
@@ -1404,7 +1430,7 @@ select {
       const isSide = row.side === '左' || row.side === '右';
       let sideLabel = '';
       if (isSide) sideLabel = row.side;
-      else if (rows.length > 1 || row.slot !== '1') sideLabel = `槽${row.slot}`;
+      else if (!row.singleValue && (rows.length > 1 || row.slot !== '1')) sideLabel = `槽${row.slot}`;
       if (!isSide) item.classList.add('extra-slot');
       if (sideLabel) item.append(element('span', sideLabel, 'slot-label'));
 
@@ -1551,11 +1577,21 @@ select {
       lines.push('', `【${category.name}】`);
       for (const part of category.parts) {
         const columns = compare
-          ? '参数\t侧别 / 槽位\t编号\tA 原始值\tB 原始值\t差值 B−A\t绝对差\t状态'
-          : '参数\t侧别 / 槽位\t编号\t原始数值';
+          ? '参数\t侧别 / 槽位\t编号 / 原始槽位\tA 原始值\tB 原始值\t差值 B−A\t绝对差\t状态'
+          : '参数\t侧别 / 槽位\t编号 / 原始槽位\t原始数值';
         lines.push(`〔${part.name}〕`, columns);
         for (const row of part.rows) {
-          const values = [row.field + (row.pending ? '（待校对）' : ''), row.side, row.key];
+          let identifier = row.key;
+          if (row.singleValue) {
+            if (compare) {
+              const slotsA = row.sourceSlotsA?.join('/') ?? '未记录';
+              const slotsB = row.sourceSlotsB?.join('/') ?? '未记录';
+              identifier = `${row.id}（A槽位 ${slotsA}；B槽位 ${slotsB}）`;
+            } else {
+              identifier = `${row.id}（槽位 ${row.sourceSlots.join('/')}）`;
+            }
+          }
+          const values = [row.field + (row.pending ? '（待校对）' : ''), row.side, identifier];
           if (compare) {
             let stateLabel;
             if (row.state === 'same') stateLabel = '相同';
@@ -1588,7 +1624,7 @@ select {
       lines.push(`口令码 B：${report.codeB}`, '', comparisonSummary(report.stats), '', '【全部参数明细】');
       appendReportRows(lines, report.stats.rows, true);
     } else {
-      lines.push('', `共 ${report.recordsA.length} 个参数记录，${report.rows.length} 个槽位。`, '', '【全部参数明细】');
+      lines.push('', `共 ${report.recordsA.length} 个参数记录，${report.rows.length} 个数值。`, '', '【全部参数明细】');
       appendReportRows(lines, report.rows, false);
     }
     return lines.join('\n');
