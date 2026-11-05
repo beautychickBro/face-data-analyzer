@@ -28,6 +28,11 @@ button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-vis
 .mode-switch button{min-width:116px;min-height:38px;padding:7px 18px;border:0;background:transparent;color:var(--muted);font-size:14px}
 .mode-switch button:hover:enabled{background:#e1e1e1}
 .mode-switch button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 4px #0000000d}
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px}
+.download-tool{display:inline-flex;align-items:center;justify-content:center;flex:none;width:32px;height:32px;border-radius:50%;color:#777;text-decoration:none}
+.download-tool:hover{background:#ededed;color:var(--ink)}
+.download-tool:focus-visible{outline:3px solid #963750;outline-offset:3px}
+.download-tool svg{display:block;width:18px;height:18px}
 .input-card{margin-top:24px;padding:24px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
 .input-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}
 .input-grid>div{min-width:0}
@@ -102,10 +107,12 @@ td .calibrated{display:block;margin-top:3px;color:var(--muted);font-size:11px}
   .score-card{padding:19px}
 }
 @media(max-width:620px){
-  main{grid-template-columns:minmax(0,1fr);width:calc(100% - 28px);margin:24px auto 32px}
+  main{position:relative;grid-template-columns:minmax(0,1fr);width:calc(100% - 28px);margin:24px auto 32px}
   h1{font-size:26px}
   h2{font-size:20px}
   .mode-switch{justify-self:start;max-width:100%;margin-top:18px}
+  .header-actions{justify-content:flex-start;min-width:0}
+  .download-tool{position:absolute;top:0;right:0}
   .mode-switch button{min-width:120px;padding:7px 16px}
   .input-card{margin-top:18px;padding:18px;border-radius:17px}
   .input-grid{grid-template-columns:minmax(0,1fr);gap:18px}
@@ -136,9 +143,12 @@ td .calibrated{display:block;margin-top:3px;color:var(--muted);font-size:11px}
   <header>
     <h1>捏脸数据对比</h1>
   </header>
-  <div class="mode-switch" role="group" aria-label="分析模式">
-    <button id="mode-compare" type="button" aria-pressed="true">双码对比</button>
-    <button id="mode-single" type="button" aria-pressed="false">单码提取</button>
+  <div class="header-actions">
+    <div class="mode-switch" role="group" aria-label="分析模式">
+      <button id="mode-compare" type="button" aria-pressed="true">双码对比</button>
+      <button id="mode-single" type="button" aria-pressed="false">单码提取</button>
+    </div>
+    <a id="download-tool" class="download-tool" href="./index.html" download="FaceDataAnalyzer.html" aria-label="Download tool" title="Download tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 16v4h16v-4"/></svg></a>
   </div>
   <form id="form" class="input-card">
     <div id="input-grid" class="input-grid">
@@ -264,6 +274,7 @@ async function decodeShare(share){if(typeof share?.face_data!=='string')throw ne
 async function extractShare(input){let s=input.trim();if(!s)throw new DataError('请粘贴完整数据。');if(s.length>10000)throw new DataError('输入过长。');let match=s.match(/yysls_facedata_R\d+_([A-Za-z0-9]{24,90})/);if(!match)throw new DataError('未识别到标准长格式数据。');let last;for(let source of sources){let controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);try{let res=await fetch(source+match[1],{signal:controller.signal,credentials:'omit',referrerPolicy:'no-referrer',mode:'cors'});if(!res.ok){last=new DataError(res.status===404?'分享数据已失效。':'数据来源暂不可用。','NETWORK');continue}let text=await res.text();if(text.length>1048576)throw new DataError('文件超出预期大小。');let share;try{share=JSON.parse(text)}catch{throw new DataError('返回数据格式错误。')}return await decodeShare(share)}catch(e){if(e instanceof DataError&&e.code!=='NETWORK')throw e;last=e}finally{clearTimeout(timer)}}throw last instanceof DataError?last:new DataError('网络读取失败，请稍后再试。')}
 
 const $=id=>document.getElementById(id);
+$('download-tool').href=location.href.split('#')[0];
 const ui={form:$('form'),a:$('code-a'),b:$('code-b'),submit:$('submit'),result:$('result'),status:$('status'),copy:$('copy-all'),copyText:$('copy-text'),only:$('differences-only'),sort:$('sort-order')};
 let mode='compare',busy=false,currentReport=null;
 
