@@ -23,7 +23,7 @@ button:hover:enabled{background:#ccc}
 button:disabled,select:disabled,input:disabled,textarea:disabled{opacity:.55;cursor:wait}
 button.secondary{background:#d9d9d9;color:var(--ink)}
 button.secondary:hover:enabled{background:#ccc}
-button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #963750;outline-offset:3px}
+button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #963750;outline-offset:3px}
 .mode-switch{display:inline-flex;justify-self:end;gap:4px;padding:4px;border:1px solid #d7d7d7;border-radius:999px;background:#ececec}
 .mode-switch button{min-width:116px;min-height:38px;padding:7px 18px;border:0;background:transparent;color:var(--muted);font-size:14px}
 .mode-switch button:hover:enabled{background:#e1e1e1}
@@ -56,22 +56,7 @@ textarea[aria-invalid="true"]{border-color:#ad3446}
 .panel{min-width:0;padding:24px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
 .section-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
 .section-heading button{min-height:40px;padding:8px 18px;font-size:14px}
-.score-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:18px;margin-top:22px}
-.score-card{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:22px;border:1px solid #efadbe;border-radius:15px;background:var(--pink)}
-.score-label{font-size:14px;font-weight:650}
-.score-value{margin:10px 0;font:600 clamp(36px,4.5vw,54px)/1.15 var(--mono);letter-spacing:-.065em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.score-note{color:#59323e;font-size:12px;line-height:1.6}
-.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-dl{margin:0}
-.metric{min-width:0;padding:16px 17px;border:1px solid var(--line);border-radius:15px;background:#fff}
-.metric dt{color:var(--muted);font-size:13px}
-.metric dd{margin:6px 0 0;font:500 27px/1.25 var(--mono);letter-spacing:-.045em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.metric small{display:block;margin-top:6px;color:var(--muted);font-size:12px}
-.summary-text{margin-top:18px;padding:13px 16px;border:1px solid #e7e7e7;border-radius:11px;background:#f6f6f6;font-size:14px;line-height:1.65}
-details{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
-summary{width:fit-content;cursor:pointer;color:var(--ink);font-size:14px;font-weight:650}
-summary::marker{color:#6c6c6c}
-.calculation{margin:14px 0 0;padding:17px 18px;border:1px solid #e2e2e2;border-radius:12px;background:#f7f7f7;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.85 var(--mono)}
+.summary-text{margin-top:18px;padding:13px 16px;border:1px solid #e7e7e7;border-radius:11px;background:#f6f6f6;font-size:16px;line-height:1.65}
 .detail-panel{margin-top:20px;padding:0;overflow:hidden}
 .table-top{padding:22px 24px 18px}
 .table-controls{display:flex;align-items:center;flex-wrap:wrap;gap:18px;margin-top:16px}
@@ -98,13 +83,9 @@ td .calibrated{display:block;margin-top:3px;color:var(--muted);font-size:11px}
 .row-badge{display:inline-block;margin-left:7px;padding:1px 5px;border-radius:5px;background:#eee5e9;color:#6d3c4d;font-size:11px;font-weight:500}
 .empty-row{padding:30px!important;text-align:center!important;color:var(--muted)}
 #copy-text{min-height:250px;margin-top:18px}
-.field-status:empty,#status:empty,.score-note:empty,.metric small:empty{display:none}
+.field-status:empty,#status:empty{display:none}
 @media(max-width:920px){
   main{width:calc(100% - 40px);margin-top:28px}
-  .score-layout{grid-template-columns:210px minmax(0,1fr);gap:14px}
-  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .metric{padding:14px}
-  .score-card{padding:19px}
 }
 @media(max-width:620px){
   main{position:relative;grid-template-columns:minmax(0,1fr);width:calc(100% - 28px);margin:24px auto 32px}
@@ -123,18 +104,10 @@ td .calibrated{display:block;margin-top:3px;color:var(--muted);font-size:11px}
   .panel{padding:18px;border-radius:17px}
   .section-heading{gap:12px}
   .section-heading button{padding:8px 14px;font-size:13px}
-  .score-layout{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px}
-  .score-card{padding:18px}
-  .score-value{font-size:46px}
-  .metrics{gap:10px}
-  .metric{padding:13px}
-  .metric dd{font-size:25px}
-  .metric small{font-size:11px}
   .detail-panel{padding:0}
   .table-top{padding:18px}
   .table-controls{gap:14px}
   .select-label{width:100%;justify-content:space-between}
-  .calculation{padding:14px;font-size:12px}
 }
 </style>
 </head>
@@ -175,23 +148,7 @@ td .calibrated{display:block;margin-top:3px;color:var(--muted);font-size:11px}
         <button id="copy-all" class="secondary" type="button">复制完整报告</button>
       </div>
       <div id="comparison-summary">
-        <div class="score-layout">
-          <div class="score-card">
-            <p class="score-label">相似度（参数一致率）</p>
-            <p id="score" class="score-value"></p>
-            <p id="score-note" class="score-note"></p>
-          </div>
-          <dl class="metrics">
-            <div class="metric"><dt>相同参数</dt><dd id="same-count"></dd></div>
-            <div class="metric"><dt>不同参数</dt><dd id="changed-count"></dd></div>
-            <div class="metric"><dt>缺失参数</dt><dd id="missing-count"></dd><small id="missing-note"></small></div>
-            <div class="metric"><dt>共有参数</dt><dd id="common-count"></dd></div>
-            <div class="metric"><dt>共有覆盖率</dt><dd id="coverage"></dd></div>
-            <div class="metric"><dt>平均原始差</dt><dd id="mean-difference"></dd></div>
-          </dl>
-        </div>
         <p id="summary-text" class="summary-text"></p>
-        <details id="calculation-details"><summary>计算过程</summary><pre id="calculation" class="calculation"></pre></details>
       </div>
       <textarea id="copy-text" hidden readonly aria-label="完整报告，可手动复制"></textarea>
     </div>
@@ -293,61 +250,28 @@ function flattenRecords(records){
 }
 function compareRecords(recordsA,recordsB){
   const a=new Map(flattenRecords(recordsA).map(row=>[row.key,row])),b=new Map(flattenRecords(recordsB).map(row=>[row.key,row]));
-  const stats={rows:[],same:0,changed:0,onlyA:0,onlyB:0,common:0,total:0,totalDifference:0,groups:[],countA:a.size,countB:b.size};
-  const groups=new Map();
+  const stats={rows:[],same:0,changed:0,nonDefaultSame:0,nonDefaultNear:0,onlyA:0,onlyB:0,common:0,total:0};
   for(const key of new Set([...a.keys(),...b.keys()])){
     const rowA=a.get(key),rowB=b.get(key),meta=rowA||rowB;
     const row={...meta,a:rowA?.value,b:rowB?.value,delta:null,absolute:null,state:''};
     if(!rowA){row.state='missingA';stats.onlyB++;}
     else if(!rowB){row.state='missingB';stats.onlyA++;}
     else{
-      row.delta=row.b-row.a;row.absolute=Math.abs(row.delta);stats.common++;stats.totalDifference+=row.absolute;
+      row.delta=row.b-row.a;row.absolute=Math.abs(row.delta);stats.common++;
       row.state=row.absolute===0?'same':'changed';stats[row.state]++;
-      if(!groups.has(row.group))groups.set(row.group,{group:row.group,part:row.part,sum:0,changed:0});
-      const group=groups.get(row.group);group.sum+=row.absolute;if(row.absolute>0)group.changed++;
+      if(row.a!==50&&row.b!==50){
+        if(row.absolute===0)stats.nonDefaultSame++;
+        else if(row.absolute>=1&&row.absolute<=5)stats.nonDefaultNear++;
+      }
     }
     stats.rows.push(row);
   }
   stats.rows.sort(partOrder);stats.total=stats.rows.length;
-  stats.groups=[...groups.values()].filter(group=>group.sum>0).sort((a,b)=>b.sum-a.sum||a.group-b.group);
   return stats;
 }
-function percentage(numerator,denominator){
-  if(!denominator)return '无法计算';
-  const value=numerator/denominator*100;
-  if(numerator>0&&value<.005)return '<0.01%';
-  if(numerator<denominator&&value>=99.995)return '>99.99%';
-  return `${value.toFixed(2)}%`;
-}
-function meanDifference(stats){return stats.common?(stats.totalDifference/stats.common).toFixed(3):'无法计算';}
 function signed(value){return value>0?`+${value}`:String(value);}
-function rowLabel(row){return `${row.part} / ${row.field}${row.pending?'（待校对）':''} / ${row.side} [${row.key}]`;}
 function comparisonSummary(stats){
-  if(!stats.common)return '无共有参数，无法计算。';
-  if(!stats.changed)return stats.onlyA+stats.onlyB?'共有参数一致。':'全部参数一致。';
-  const group=stats.groups[0];
-  return `差异最大：${group.part}（原始差合计 ${group.sum}）。`;
-}
-function calculationText(stats){
-  const lines=[
-    `A ${stats.countA} 项，B ${stats.countB} 项，共有 ${stats.common} 项，并集 ${stats.total} 项。`,
-    `相同 ${stats.same} 项，不同 ${stats.changed} 项；仅 A ${stats.onlyA} 项，仅 B ${stats.onlyB} 项。`,
-    '',
-    '相似度（参数一致率）= 相同项 ÷ 共有项 × 100%',
-    stats.common?`${stats.same} ÷ ${stats.common} × 100% = ${percentage(stats.same,stats.common)}`:'无共有项，无法计算。',
-    '',
-    '覆盖率 = 共有项 ÷ 并集 × 100%',
-    `${stats.common} ÷ ${stats.total} × 100% = ${percentage(stats.common,stats.total)}`,
-    '',
-    '平均原始差 = Σ|B − A| ÷ 共有项',
-    stats.common?`${stats.totalDifference} ÷ ${stats.common} = ${meanDifference(stats)}`:'无共有项，无法计算。',
-    '',
-    '按部位、参数、槽位对齐；左右分别比较。使用原始值，缺失项不计分。'
-  ];
-  const examples=stats.rows.filter(row=>row.absolute!==null).sort((a,b)=>b.absolute-a.absolute||partOrder(a,b)).slice(0,2);
-  if(examples.length)lines.push('','差值示例：');
-  for(const row of examples)lines.push(`${rowLabel(row)}：|${row.b} − ${row.a}| = ${row.absolute}`);
-  return lines.join('\n');
+  return `共同项中完全相同 ${stats.same} 项、不同 ${stats.changed} 项；排除含 50 的项后，相同 ${stats.nonDefaultSame} 项、差值在 1～5 的 ${stats.nonDefaultNear} 项。`;
 }
 function valueCell(value,id){
   const cell=element('td',value===undefined?'未记录':String(value),'numeric');
@@ -387,17 +311,11 @@ function renderTable(){
   $('table-count').textContent=compare?`显示 ${rows.length} / ${stats.total} 项`:`共 ${rows.length} 个槽位`;
 }
 function renderComparison(report){
-  const stats=report.stats,missing=stats.onlyA+stats.onlyB;
   $('result-title').textContent='对比结果';
   $('comparison-summary').hidden=false;$('table-controls').hidden=false;
-  $('score').textContent=percentage(stats.same,stats.common);
-  $('score-note').textContent=missing?`缺失 ${missing} 项，仅比较共有参数。`:'';
-  $('same-count').textContent=stats.same;$('changed-count').textContent=stats.changed;$('missing-count').textContent=missing;
-  $('missing-note').textContent=`仅 A：${stats.onlyA} · 仅 B：${stats.onlyB}`;$('common-count').textContent=stats.common;
-  $('coverage').textContent=percentage(stats.common,stats.total);$('mean-difference').textContent=stats.common?meanDifference(stats):'—';
-  $('summary-text').textContent=comparisonSummary(stats);$('calculation').textContent=calculationText(stats);
+  $('summary-text').textContent=comparisonSummary(report.stats);
   $('detail-title').textContent='参数明细';
-  $('calculation-details').open=false;ui.only.checked=true;ui.sort.value='difference';renderTable();
+  ui.only.checked=true;ui.sort.value='difference';renderTable();
 }
 function renderSingle(report){
   $('result-title').textContent='提取结果';
@@ -407,8 +325,7 @@ function renderSingle(report){
 function reportText(report){
   const lines=['捏脸数据分析报告',`模式：${report.mode==='compare'?'双码对比':'单码提取'}`,`口令码 A：${report.codeA}`];
   if(report.mode==='compare'){
-    const stats=report.stats;lines.push(`口令码 B：${report.codeB}`,'',`参数相似度（按共有槽位完全一致率）：${percentage(stats.same,stats.common)}`,`相同 ${stats.same} 项，不同 ${stats.changed} 项，缺失 ${stats.onlyA+stats.onlyB} 项（仅 A ${stats.onlyA}，仅 B ${stats.onlyB}）`,
-      `共有 ${stats.common} 项，并集 ${stats.total} 项，覆盖率 ${percentage(stats.common,stats.total)}`,`平均原始差：${meanDifference(stats)}`,'',comparisonSummary(stats),'','【相似度计算过程】',calculationText(stats),'','【全部参数明细】','部位\t参数\t侧别 / 槽位\t编号\tA 原始值\tB 原始值\t差值 B−A\t绝对差\t状态');
+    const stats=report.stats;lines.push(`口令码 B：${report.codeB}`,'',comparisonSummary(stats),'','【全部参数明细】','部位\t参数\t侧别 / 槽位\t编号\tA 原始值\tB 原始值\t差值 B−A\t绝对差\t状态');
     for(const row of stats.rows)lines.push([row.part,row.field+(row.pending?'（待校对）':''),row.side,row.key,row.a===undefined?'未记录':display(row.a,row.id),row.b===undefined?'未记录':display(row.b,row.id),row.delta===null?'—':signed(row.delta),row.absolute===null?'—':row.absolute,row.state==='same'?'相同':row.state==='changed'?'不同':row.state==='missingA'?'仅 B 有':'仅 A 有'].join('\t'));
   }else{
     lines.push('',`共 ${report.recordsA.length} 个参数记录，${report.rows.length} 个槽位。`,'','【全部参数明细】','部位\t参数\t侧别 / 槽位\t编号\t原始数值');
