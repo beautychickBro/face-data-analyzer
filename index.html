@@ -6,147 +6,821 @@
 <meta name="theme-color" content="#f6f4ed">
 <title>捏脸数据分析 · 口令码对比</title>
 <style>
-:root{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color-scheme:light;--bg:#fafafa;--surface:#fff;--ink:#161616;--muted:#626262;--line:#dedede;--pink:#ffbcca;--difference:#fff0f4;--missing:#f2effa;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
-*{box-sizing:border-box}
-[hidden]{display:none!important}
-body{margin:0;color:var(--ink);font-size:16px;line-height:1.6;background-color:var(--bg);background-image:radial-gradient(#d8d8d8 .75px,transparent .75px);background-size:18px 18px}
-main{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:24px;width:min(1200px,calc(100% - 64px));margin:40px auto 48px}
-main>header{min-width:0}
-main>.input-card,main>#status,main>#result{grid-column:1/-1;min-width:0}
-h1,h2,h3,p{margin:0}
-h1{font-size:28px;line-height:1.3;letter-spacing:-.04em;font-weight:750}
-h2{font-size:21px;line-height:1.4;letter-spacing:-.025em}
-h3{font-size:17px}
-button,textarea,select,input{font:inherit}
-button{min-height:44px;padding:9px 22px;border:1px solid transparent;border-radius:999px;background:#d9d9d9;color:var(--ink);font-weight:650;cursor:pointer;transition:background-color .15s,border-color .15s}
-button:hover:enabled{background:#ccc}
-button:disabled,select:disabled,input:disabled,textarea:disabled{opacity:.55;cursor:wait}
-button.secondary{background:#d9d9d9;color:var(--ink)}
-button.secondary:hover:enabled{background:#ccc}
-button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #963750;outline-offset:3px}
-.mode-switch{display:inline-flex;justify-self:end;gap:4px;padding:4px;border:1px solid #d7d7d7;border-radius:999px;background:#ececec}
-.mode-switch button{min-width:116px;min-height:38px;padding:7px 18px;border:0;background:transparent;color:var(--muted);font-size:14px}
-.mode-switch button:hover:enabled{background:#e1e1e1}
-.mode-switch button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 4px #0000000d}
-.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px}
-.download-tool{display:inline-flex;align-items:center;justify-content:center;flex:none;width:32px;height:32px;border-radius:50%;color:#777;text-decoration:none}
-.download-tool:hover{background:#ededed;color:var(--ink)}
-.download-tool:focus-visible{outline:3px solid #963750;outline-offset:3px}
-.download-tool svg{display:block;width:18px;height:18px}
-.input-card{margin-top:24px;padding:24px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
-.input-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}
-.input-grid>div{min-width:0}
-.input-grid.single{grid-template-columns:minmax(0,1fr)}
-.input-label{display:flex;align-items:center;gap:9px;margin-bottom:10px;font-size:15px;font-weight:650}
-.letter{display:inline-grid;place-items:center;width:26px;height:26px;border:1px solid #e7b8c3;border-radius:8px;background:#ffe0e8;color:#562333;font:600 13px/1 var(--mono)}
-.letter-b{border-color:#d7d0e5;background:#eae5f3;color:#423454}
-textarea{display:block;width:100%;min-height:128px;padding:15px 16px;border:1px solid #d2d2d2;border-radius:12px;background:#f8f8f8;color:var(--ink);font:14px/1.75 var(--mono);resize:vertical;overflow-wrap:anywhere;transition:border-color .15s,background-color .15s}
-textarea::placeholder{color:#777}
-textarea:focus{background:#fff;border-color:#a24c64}
-textarea[aria-invalid="true"]{border-color:#ad3446}
-.field-status{margin-top:8px;color:var(--muted);font-size:13px}
-.field-status.error,.error{color:#a32b3e}
-.form-actions{display:flex;justify-content:flex-end;align-items:center;gap:16px;margin-top:18px}
-.hint{color:var(--muted);font-size:13px}
-.primary-action{min-width:164px;background:var(--pink);color:var(--ink)}
-.primary-action:hover:enabled{background:#ffaec0}
-#status{margin:14px 2px 0;color:var(--muted);font-size:14px}
-#status.error{color:#a32b3e}
-#result{margin-top:24px}
-.panel{min-width:0;padding:24px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
-.section-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.section-heading button{min-height:40px;padding:8px 18px;font-size:14px}
-.count-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:14px 0 0;border:1px solid var(--line);border-radius:8px;background:#fafafa}
-.count-card{min-width:0;padding:10px 16px}
-.count-card+.count-card{border-left:1px solid var(--line)}
-.count-card dt{display:flex;flex-direction:column;justify-content:flex-end;min-height:32px;color:#515151;font-size:12px;line-height:1.4}
-.count-scope{color:var(--muted);font-size:10px}
-.count-card dd{display:flex;align-items:baseline;gap:5px;margin:3px 0 0;min-width:0}
-.count-number{min-width:0;font:600 28px/1.2 var(--mono);letter-spacing:-.05em;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
-.count-unit{flex:none;color:var(--muted);font-size:11px}
-.detail-panel{margin-top:18px;padding:0;border:0;background:transparent}
-.table-top{padding:0 2px 10px}
-.table-controls{display:flex;align-items:center;flex-wrap:wrap;gap:18px;margin-top:10px}
-.check-label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:12px}
-input[type="checkbox"]{width:15px;height:15px;margin:0;accent-color:#74394c}
-.select-label{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}
-select{min-height:30px;max-width:100%;padding:4px 26px 4px 8px;border:1px solid #d5d5d5;border-radius:5px;background:#f6f6f6;color:var(--ink);font-size:12px}
-#detail-groups{display:grid;gap:10px;min-width:0}
-.detail-category{min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden}
-.category-summary{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;list-style:none;font-size:14px;font-weight:700;background:#f6f6f6}
-.category-summary::-webkit-details-marker{display:none}
-.category-summary:focus-visible{outline-offset:-4px}
-.category-summary::after{content:'';width:6px;height:6px;flex:none;border-right:1.5px solid #777;border-bottom:1.5px solid #777;transform:rotate(45deg);margin-right:2px}
-.detail-category[open]>.category-summary::after{transform:rotate(225deg)}
-.category-count{margin-left:auto;color:var(--muted);font-size:11px;font-weight:400}
-.group-content{padding:0 12px 8px}
-.detail-part{min-width:0}
-.detail-part+.detail-part{margin-top:6px}
-.parameter-table .part-heading{padding:8px 6px 3px;border-bottom:1px solid var(--line);background:#fafafa;color:#555;font-size:11px;font-weight:600;text-align:left}
-.parameter-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;line-height:1.4}
-.parameter-table th,.parameter-table td{padding:5px 6px;border-bottom:1px solid #eee;text-align:left;vertical-align:middle}
-.parameter-table thead th{padding-top:4px;padding-bottom:4px;background:#fafafa;color:var(--muted);font-size:11px;font-weight:400}
-.parameter-table th:first-child{width:28%}
-.parameter-table td,.parameter-table thead th:not(:first-child){text-align:right}
-.parameter-table tbody th{font-weight:400;overflow-wrap:anywhere}
-.parameter-table tbody tr:last-child th,.parameter-table tbody tr:last-child td{border-bottom:0}
-.parameter-table tbody tr:hover{background:#fafafa}
-.parameter-name{font-size:13px}
-.row-badge{margin-left:4px;color:#888;font-size:10px;white-space:nowrap}
-.slot-series{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:2px 10px}
-.slot-value{display:inline-flex;align-items:baseline;gap:2px;white-space:nowrap;font:400 13px/1.4 var(--mono);font-variant-numeric:tabular-nums}
-.slot-label{font:9px/1.4 system-ui,sans-serif;color:#888}
-.slot-value.is-missing{color:#888}
-.delta-value{color:#999}
-.delta-value.is-changed{padding:0 3px;border-radius:3px;background:#fbe9ef;color:#9a294b;font-weight:700}
-.delta-value.is-changed .slot-label{color:#9a294b}
-.empty-details{margin:0;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--muted);font-size:13px;text-align:center}
-#copy-text{min-height:250px;margin-top:18px}
-.field-status:empty,#status:empty{display:none}
-@media(max-width:920px){
-  main{width:calc(100% - 40px);margin-top:28px}
+:root {
+  font-family: system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  color-scheme: light;
+  --bg: #fafafa;
+  --surface: #fff;
+  --ink: #161616;
+  --muted: #626262;
+  --line: #dedede;
+  --pink: #ffbcca;
+  --mono: ui-monospace,SFMono-Regular,Consolas,monospace;
 }
-@media(max-width:620px){
-  main{position:relative;grid-template-columns:minmax(0,1fr);width:calc(100% - 28px);margin:24px auto 32px}
-  h1{font-size:26px}
-  h2{font-size:20px}
-  .mode-switch{justify-self:start;max-width:100%;margin-top:18px}
-  .header-actions{justify-content:flex-start;min-width:0}
-  .download-tool{position:absolute;top:0;right:0}
-  .mode-switch button{min-width:120px;padding:7px 16px}
-  .input-card{margin-top:18px;padding:18px;border-radius:17px}
-  .input-grid{grid-template-columns:minmax(0,1fr);gap:18px}
-  textarea{min-height:112px;padding:13px 14px}
-  .form-actions{margin-top:16px}
-  .primary-action{width:100%}
-  #result{margin-top:20px}
-  .panel{padding:18px;border-radius:17px}
-  .section-heading{gap:12px}
-  .section-heading button{padding:8px 14px;font-size:13px}
-  .count-cards{gap:0;margin-top:12px}
-  .count-card{padding:8px}
-  .count-card dt{font-size:11px;min-height:30px}
-  .count-number{font-size:24px}
-  .count-scope{font-size:9px}
-  .count-unit{font-size:10px}
-  .detail-panel{padding:0}
-  .table-top{padding:0 2px 10px}
-  .category-summary{padding:7px 9px;font-size:13px}
-  .group-content{padding:0 5px 5px}
-  .parameter-table .part-heading{padding:7px 4px 3px;font-size:10px}
-  .parameter-table{font-size:12px}
-  .parameter-table th,.parameter-table td{padding:5px 4px}
-  .parameter-table th:first-child{width:26%}
-  .parameter-table thead th{font-size:10px}
-  .parameter-name{font-size:12px}
-  .slot-series{column-gap:5px}
-  .slot-value{font-size:12px;gap:1px}
-  .slot-label{font-size:8px}
-  .delta-value{font-size:11px}
-  .delta-value.is-changed{padding:0 2px}
-  .row-badge{display:block;margin-left:0;font-size:9px}
-  .table-controls{gap:12px}
 
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none!important;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.6;
+  background-color: var(--bg);
+  background-image: radial-gradient(#d8d8d8 .75px,transparent .75px);
+  background-size: 18px 18px;
+}
+
+main {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  column-gap: 24px;
+  width: min(1200px,calc(100% - 64px));
+  margin: 40px auto 48px;
+}
+
+main>header {
+  min-width: 0;
+}
+
+main>.input-card,
+main>#status,
+main>#result {
+  grid-column: 1/-1;
+  min-width: 0;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 28px;
+  line-height: 1.3;
+  letter-spacing: -.04em;
+  font-weight: 750;
+}
+
+h2 {
+  font-size: 21px;
+  line-height: 1.4;
+  letter-spacing: -.025em;
+}
+
+button,
+textarea,
+select,
+input {
+  font: inherit;
+}
+
+button {
+  min-height: 44px;
+  padding: 9px 22px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: #d9d9d9;
+  color: var(--ink);
+  font-weight: 650;
+  cursor: pointer;
+  transition: background-color .15s,border-color .15s;
+}
+
+button:hover:enabled {
+  background: #ccc;
+}
+
+button:disabled,
+select:disabled,
+input:disabled,
+textarea:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+button:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 3px solid #963750;
+  outline-offset: 3px;
+}
+
+.mode-switch {
+  display: inline-flex;
+  justify-self: end;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #d7d7d7;
+  border-radius: 999px;
+  background: #ececec;
+}
+
+.mode-switch button {
+  min-width: 116px;
+  min-height: 38px;
+  padding: 7px 18px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.mode-switch button:hover:enabled {
+  background: #e1e1e1;
+}
+
+.mode-switch button[aria-pressed="true"] {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 1px 4px #0000000d;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.download-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #777;
+  text-decoration: none;
+}
+
+.download-tool:hover {
+  background: #ededed;
+  color: var(--ink);
+}
+
+.download-tool:focus-visible {
+  outline: 3px solid #963750;
+  outline-offset: 3px;
+}
+
+.download-tool svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.input-card {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 22px;
+}
+
+.input-grid>div {
+  min-width: 0;
+}
+
+.input-grid.single {
+  grid-template-columns: minmax(0,1fr);
+}
+
+.input-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.letter {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #e7b8c3;
+  border-radius: 8px;
+  background: #ffe0e8;
+  color: #562333;
+  font: 600 13px/1 var(--mono);
+}
+
+.letter-b {
+  border-color: #d7d0e5;
+  background: #eae5f3;
+  color: #423454;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 128px;
+  padding: 15px 16px;
+  border: 1px solid #d2d2d2;
+  border-radius: 12px;
+  background: #f8f8f8;
+  color: var(--ink);
+  font: 14px/1.75 var(--mono);
+  resize: vertical;
+  overflow-wrap: anywhere;
+  transition: border-color .15s,background-color .15s;
+}
+
+textarea::placeholder {
+  color: #777;
+}
+
+textarea:focus {
+  background: #fff;
+  border-color: #a24c64;
+}
+
+textarea[aria-invalid="true"] {
+  border-color: #ad3446;
+}
+
+.field-status {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.field-status.error,
+.error {
+  color: #a32b3e;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.primary-action {
+  min-width: 164px;
+  background: var(--pink);
+  color: var(--ink);
+}
+
+.primary-action:hover:enabled {
+  background: #ffaec0;
+}
+
+#status {
+  margin: 14px 2px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+#status.error {
+  color: #a32b3e;
+}
+
+#result {
+  margin-top: 24px;
+}
+
+.panel {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.section-heading button {
+  min-height: 40px;
+  padding: 8px 18px;
+  font-size: 14px;
+}
+
+.count-cards {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 0;
+  margin: 14px 0 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.count-card {
+  min-width: 0;
+  padding: 10px 16px;
+}
+
+.count-card+.count-card {
+  border-left: 1px solid var(--line);
+}
+
+.count-card dt {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 32px;
+  color: #515151;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.count-scope {
+  color: #555;
+  font-size: 11px;
+}
+
+.count-card dd {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin: 3px 0 0;
+  min-width: 0;
+}
+
+.count-number {
+  min-width: 0;
+  font: 600 28px/1.2 var(--mono);
+  letter-spacing: -.05em;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+.count-unit {
+  flex: none;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.detail-panel {
+  margin-top: 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.table-top {
+  padding: 0 2px 10px;
+}
+
+.table-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: #74394c;
+}
+
+.select-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+select {
+  min-height: 30px;
+  max-width: 100%;
+  padding: 4px 26px 4px 8px;
+  border: 1px solid #d5d5d5;
+  border-radius: 5px;
+  background: #f6f6f6;
+  color: var(--ink);
+  font-size: 12px;
+}
+
+#detail-groups {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.detail-category {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.category-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 700;
+  background: #f6f6f6;
+}
+
+.category-summary::-webkit-details-marker {
+  display: none;
+}
+
+.category-summary:focus-visible {
+  outline-offset: -4px;
+}
+
+.category-summary::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-right: 1.5px solid #777;
+  border-bottom: 1.5px solid #777;
+  transform: rotate(45deg);
+  margin-right: 2px;
+}
+
+.detail-category[open]>.category-summary::after {
+  transform: rotate(225deg);
+}
+
+.category-count {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.group-content {
+  padding: 0 12px 8px;
+}
+
+.parameter-table .part-heading {
+  padding: 7px 8px 4px;
+  border-bottom: 1px solid #d8d8d8;
+  background: #f0f0f0;
+  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.parameter-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.parameter-table th,
+.parameter-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid #dedede;
+  border-left: 1px solid #e6e6e6;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.parameter-table thead th {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #f7f7f7;
+  color: #444;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.parameter-table th:first-child {
+  width: 28%;
+  border-left: 0;
+}
+
+.parameter-table.compare thead th:nth-child(2),
+.parameter-table.compare thead th:nth-child(3) {
+  width: 22%;
+}
+
+.parameter-table.compare thead th:nth-child(4) {
+  width: 28%;
+}
+
+.parameter-table td {
+  text-align: right;
+}
+
+.parameter-table thead th:not(:first-child) {
+  text-align: center;
+}
+
+.parameter-table tbody th {
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.parameter-table tbody tr:last-child th,
+.parameter-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.parameter-table tbody .detail-row:nth-child(odd) {
+  background: #fafafa;
+}
+
+.parameter-table tbody .detail-row:hover {
+  background: #f2f2f2;
+}
+
+.parameter-name {
+  font-size: 14px;
+}
+
+.row-badge {
+  margin-left: 4px;
+  color: #626262;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.slot-series {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  align-items: center;
+  gap: 2px 8px;
+  max-width: 128px;
+  margin-left: auto;
+}
+
+.slot-series.single {
+  grid-template-columns: minmax(0,1fr);
+}
+
+.slot-value {
+  display: inline-flex;
+  justify-self: end;
+  align-items: baseline;
+  gap: 3px;
+  white-space: nowrap;
+  color: #222;
+  font: 550 14px/20px var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.slot-value.extra-slot {
+  grid-column: 1/-1;
+}
+
+.slot-label {
+  font: 11px/20px system-ui,sans-serif;
+  color: #555;
+}
+
+.slot-value.is-missing {
+  color: #626262;
+}
+
+.delta-value {
+  color: #626262;
+}
+
+.delta-value.is-changed {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: #f9dce6;
+  color: #861c40;
+  font-weight: 700;
+}
+
+.delta-value.is-changed .slot-label {
+  color: #861c40;
+}
+
+.empty-details {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+#copy-text {
+  min-height: 250px;
+  margin-top: 18px;
+}
+
+.field-status:empty,
+#status:empty {
+  display: none;
+}
+
+@media (max-width: 920px) {
+  main {
+    width: calc(100% - 40px);
+    margin-top: 28px;
+  }
+}
+
+@media (max-width: 620px) {
+  main {
+    position: relative;
+    grid-template-columns: minmax(0,1fr);
+    width: calc(100% - 28px);
+    margin: 24px auto 32px;
+  }
+  h1 {
+    font-size: 26px;
+  }
+  h2 {
+    font-size: 20px;
+  }
+  .mode-switch {
+    justify-self: start;
+    max-width: 100%;
+    margin-top: 18px;
+  }
+  .header-actions {
+    justify-content: flex-start;
+    min-width: 0;
+  }
+  .download-tool {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .mode-switch button {
+    min-width: 120px;
+    padding: 7px 16px;
+  }
+  .input-card {
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 17px;
+  }
+  .input-grid {
+    grid-template-columns: minmax(0,1fr);
+    gap: 18px;
+  }
+  textarea {
+    min-height: 112px;
+    padding: 13px 14px;
+  }
+  .form-actions {
+    margin-top: 16px;
+  }
+  .primary-action {
+    width: 100%;
+  }
+  #result {
+    margin-top: 20px;
+  }
+  .panel {
+    padding: 18px;
+    border-radius: 17px;
+  }
+  .section-heading {
+    gap: 12px;
+  }
+  .section-heading button {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+  .count-cards {
+    gap: 0;
+    margin-top: 12px;
+  }
+  .count-card {
+    padding: 8px;
+  }
+  .count-card dt {
+    font-size: 11px;
+    min-height: 30px;
+  }
+  .count-number {
+    font-size: 24px;
+  }
+  .count-scope {
+    font-size: 10px;
+  }
+  .count-unit {
+    font-size: 10px;
+  }
+  .detail-panel {
+    padding: 0;
+  }
+  .table-top {
+    padding: 0 2px 10px;
+  }
+  .category-summary {
+    padding: 7px 9px;
+    font-size: 13px;
+  }
+  .group-content {
+    padding: 0 5px 5px;
+  }
+  .parameter-table .part-heading {
+    padding: 6px 4px 3px;
+    font-size: 12px;
+  }
+  .parameter-table {
+    font-size: 13px;
+  }
+  .parameter-table th,
+  .parameter-table td {
+    padding: 5px 3px;
+  }
+  .parameter-table th:first-child {
+    width: 20%;
+  }
+  .parameter-table.compare thead th:nth-child(2),
+  .parameter-table.compare thead th:nth-child(3) {
+    width: 24%;
+  }
+  .parameter-table.compare thead th:nth-child(4) {
+    width: 32%;
+  }
+  .parameter-table thead th {
+    font-size: 12px;
+  }
+  .parameter-name {
+    font-size: 13px;
+  }
+  .slot-series {
+    column-gap: 4px;
+  }
+  .slot-value {
+    font-size: 13px;
+    gap: 0;
+  }
+  .slot-label {
+    font-size: 10px;
+  }
+  .delta-value {
+    font-size: 13px;
+  }
+  .delta-value.is-changed {
+    padding: 0 2px;
+  }
+  .row-badge {
+    display: block;
+    margin-left: 0;
+    font-size: 10px;
+  }
+  .table-controls {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .group-content {
+    overflow-x: auto;
+  }
+  .parameter-table.compare {
+    min-width: 330px;
+  }
 }
 </style>
 </head>
@@ -209,282 +883,838 @@ select{min-height:30px;max-width:100%;padding:4px 26px 4px 8px;border:1px solid 
   </section>
 </main>
 <script>
-(()=>{'use strict';
-const GROUPS=[
-[52,'头部整体',[[3,'前后'],[4,'中庭长度'],[1,'长短'],[2,'宽窄']]],
-[1,'额头',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
-[41,'额头两侧',[[[1,8],'高度 / 倾斜','待校对'],[2,'间距'],[3,'前后'],[[4,5,9],'长度 / 宽度 / 外翻','待校对'],[6,'饱满'],[7,'角度']]],
-[2,'印堂',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
-[3,'颧骨',[[1,'左右'],[2,'高度'],[3,'前后'],[6,'长度'],[4,'角度'],[5,'饱满']]],
-[7,'人中两侧',[[1,'间距'],[2,'高度'],[3,'前后'],[4,'开合'],[5,'角度'],[6,'饱满']]],
-[4,'苹果肌',[[1,'间距'],[2,'高度'],[3,'前后'],[4,'角度'],[5,'饱满']]],
-[6,'脸颊',[[1,'间距'],[2,'高度'],[3,'前后'],[4,'开合'],[5,'角度'],[6,'饱满']]],
-[5,'腮帮',[[1,'间距'],[2,'高度'],[3,'前后'],[4,'角度'],[5,'饱满']]],
-[42,'下颌整体',[[1,'前后'],[2,'高度']]],
-[10,'下颌',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'宽度'],[8,'厚度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
-[11,'下颌角',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'宽度'],[8,'厚度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
-[43,'下巴上方',[[1,'前后'],[2,'高度'],[3,'角度'],[4,'饱满']]],
-[44,'下巴整体',[[1,'前后'],[2,'高度'],[3,'角度']]],
-[8,'下巴尖',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
-[9,'下巴两侧',[[[1,8],'间距 / 厚度','待校对'],[2,'高度'],[3,'前后'],[7,'宽度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
-[45,'眉眼整体',[[1,'高度'],[2,'前后'],[3,'上下间距'],[4,'左右间距']]],
-[36,'眉骨整体',[[1,'高度'],[2,'前后'],[3,'角度']]],
-[12,'眉头',[[1,'间距'],[2,'高度'],[3,'前后'],[6,'长度'],[7,'宽度'],[5,'外翻'],[4,'角度'],[8,'饱满']]],
-[13,'眉中',[[1,'间距'],[2,'高度'],[3,'前后'],[6,'长度'],[7,'宽度'],[5,'外翻'],[4,'角度'],[8,'饱满']]],
-[14,'眉尾',[[1,'间距'],[2,'高度'],[3,'前后'],[6,'长度'],[7,'宽度'],[[5,8],'外翻 / 饱满','待校对'],[4,'角度']]],
-[15,'眼睛整体',[[2,'间距'],[3,'高度'],[4,'前后'],[1,'整体大小'],[5,'旋转'],[7,'外翻'],[6,'角度']]],
-[53,'眼球整体',[[1,'内外'],[2,'上下']]],
-[16,'上眼皮头',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'长短'],[8,'宽度'],[4,'旋转'],[6,'外翻'],[5,'角度'],[9,'饱满']]],
-[17,'上眼皮尾',[[1,'间距'],[2,'高度'],[[3,9],'前后 / 饱满','待校对'],[7,'长短'],[8,'宽度'],[4,'旋转'],[6,'外翻'],[5,'角度']]],
-[18,'下眼皮',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'长短'],[8,'宽度'],[4,'旋转'],[6,'外翻'],[5,'角度'],[9,'饱满']]],
-[19,'内眼角',[[1,'间距'],[2,'高度'],[[3,9],'前后 / 饱满','待校对'],[7,'长短'],[8,'宽度'],[4,'旋转'],[6,'外翻'],[5,'角度']]],
-[20,'外眼角',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'长短'],[8,'宽度'],[4,'旋转'],[6,'外翻'],[[5,9],'角度 / 饱满','待校对']]],
-[21,'鼻子整体',[[1,'高度'],[2,'前后'],[4,'左右'],[6,'大小'],[3,'角度']]],
-[26,'鼻根',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
-[24,'鼻梁上方',[[1,'高度'],[2,'前后'],[8,'左右 / 倾斜','待校对'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
-[49,'鼻梁',[[1,'高度'],[2,'前后'],[4,'宽度'],[3,'角度'],[5,'饱满']]],
-[50,'鼻梁两侧',[[1,'高度'],[2,'前后'],[4,'间距'],[3,'角度'],[5,'饱满']]],
-[46,'鼻头整体',[[1,'高度'],[2,'前后'],[5,'侧移'],[6,'大小'],[4,'倾斜'],[3,'角度']]],
-[22,'鼻尖',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
-[23,'鼻翼',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'厚度'],[8,'宽度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
-[25,'鼻底',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
-[27,'嘴唇整体',[[1,'高度'],[2,'前后'],[3,'大小']]],
-[51,'口轮匝肌',[[1,'间距'],[2,'前后'],[4,'外翻'],[3,'角度'],[5,'饱满']]],
-[47,'上唇整体',[[1,'高度'],[2,'前后'],[3,'厚度']]],
-[28,'上唇中',[[1,'高度'],[2,'前后'],[4,'宽度'],[7,'厚度'],[3,'角度'],[6,'饱满']]],
-[29,'上唇两侧',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'宽度'],[8,'厚度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
-[48,'下唇整体',[[1,'高度'],[2,'前后'],[3,'厚度']]],
-[30,'下唇中',[[1,'高度'],[2,'前后'],[4,'宽度'],[7,'厚度'],[3,'角度'],[6,'饱满']]],
-[31,'下唇两侧',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'宽度'],[8,'厚度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
-[32,'嘴角',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'宽度'],[8,'厚度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
-[33,'耳朵整体',[[2,'间距'],[3,'高低'],[4,'前后'],[1,'大小'],[6,'外翻'],[7,'倾斜'],[5,'角度']]],
-[34,'耳廓',[[1,'间距'],[2,'高低'],[3,'前后'],[4,'角度']]],
-[35,'耳垂',[[2,'间距'],[3,'高低'],[4,'前后'],[1,'大小'],[5,'角度']]]
-];
-const groupMap=new Map(GROUPS.map(([id,name,fields],order)=>[id,{name,order}]));
-const DETAIL_CATEGORIES=[
-  ['face','脸型',[52,1,41,2,3,4,6,5,42,10,11,43,44,8,9]],
-  ['eyes','眉眼',[45,36,12,13,14,15,53,16,17,18,19,20]],
-  ['nose','鼻部',[21,26,24,49,50,46,22,23,25]],
-  ['mouth','嘴部',[7,27,51,47,28,29,48,30,31,32]],
-  ['ears','耳部',[33,34,35]]
-];
-const detailCategoryMap=new Map();
-DETAIL_CATEGORIES.forEach(([key,name,groups],order)=>groups.forEach((group,groupOrder)=>detailCategoryMap.set(group,{key,name,order,groupOrder})));
-const bilateral=new Set([41,3,7,4,6,5,10,11,9,45,36,12,13,14,15,53,16,17,18,19,20,50,23,51,29,31,32,33,34,35]);
-const fieldMap=new Map();for(const [gid,,fields] of GROUPS)fields.forEach(([ids,name,reason],order)=>{for(const cid of [].concat(ids))fieldMap.set(`${gid}:${cid}`,{name,reason:reason||'',order});});
-const verified=new Map([['21:6',{60:85}],['46:6',{35:50}],['22:4',{35:50}],['23:1',{35:50}],['23:9',{35:50}]]);
-const display=(v,id)=>verified.get(id)?.[v]===undefined?String(v):`${v}（界面${verified.get(id)[v]}）`;
-const key=new TextEncoder().encode('netease_hex_xor_encrypt_key');
-const sources=['https://h72.fp.ps.netease.com/file/','https://h72wxj.fp.ps.netease.com/file/'];
-class DataError extends Error{constructor(s,code='INVALID'){super(s);this.code=code}}
-function parseRecords(bytes){let out=[],seen=new Set(),p=0;while(p<bytes.length){if(p+3>bytes.length)throw new DataError('数据记录不完整。');let group=bytes[p++],control=bytes[p++],count=bytes[p++];if(!count||p+count*2>bytes.length)throw new DataError('数值区段不完整。');let slots={};for(let i=0;i<count;i++){let slot=String(bytes[p++]),v=bytes[p++];if(Object.hasOwn(slots,slot))throw new DataError('存在重复槽位。');slots[slot]=v}let id=`${group}:${control}`;if(seen.has(id))throw new DataError('存在重复编号。');seen.add(id);out.push({group,control,slots});if(out.length>2048)throw new DataError('数据量过大。')}if(!out.length)throw new DataError('未读取到参数。');return out}
-async function unpack(encoded){if(!('DecompressionStream' in window))throw new DataError('请使用新版浏览器。');let binary;try{binary=atob(encoded)}catch{throw new DataError('编码不完整。')}let bytes=Uint8Array.from(binary,(ch,i)=>ch.charCodeAt(0)^key[i%key.length]);try{let reader=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate')).getReader(),chunks=[],size=0;while(true){let {done,value}=await reader.read();if(done)break;size+=value.length;if(size>1048576){await reader.cancel();throw new DataError('解包数据过大。')}chunks.push(value)}let out=new Uint8Array(size),p=0;for(let c of chunks){out.set(c,p);p+=c.length}return out}catch(e){throw e instanceof DataError?e:new DataError('数据校验失败或格式不支持。')}}
-async function decodeShare(share){if(typeof share?.face_data!=='string')throw new DataError('数据格式不正确。');let parts=share.face_data.trim().split('|*|'),fmt=parts[0]?.slice(0,3);if(fmt!=='R67')throw new DataError(`仅支持 R67 数据格式，当前为 ${fmt||'未知'}。`);if(parts.length!==5&&parts.length!==6)throw new DataError('数据区段不完整。');let records=parseRecords(await unpack(parts[0].slice(3)));for(let part of [parts[1],parts[2],...parts.slice(4)])await unpack(part);if(!/^\d+$/.test(parts[3]))throw new DataError('附加标记不完整。');return records}
-async function extractShare(input){let s=input.trim();if(!s)throw new DataError('请粘贴完整数据。');if(s.length>10000)throw new DataError('输入过长。');let match=s.match(/yysls_facedata_R\d+_([A-Za-z0-9]{24,90})/);if(!match)throw new DataError('未识别到标准长格式数据。');let last;for(let source of sources){let controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);try{let res=await fetch(source+match[1],{signal:controller.signal,credentials:'omit',referrerPolicy:'no-referrer',mode:'cors'});if(!res.ok){last=new DataError(res.status===404?'分享数据已失效。':'数据来源暂不可用。','NETWORK');continue}let text=await res.text();if(text.length>1048576)throw new DataError('文件超出预期大小。');let share;try{share=JSON.parse(text)}catch{throw new DataError('返回数据格式错误。')}return await decodeShare(share)}catch(e){if(e instanceof DataError&&e.code!=='NETWORK')throw e;last=e}finally{clearTimeout(timer)}}throw last instanceof DataError?last:new DataError('网络读取失败，请稍后再试。')}
+(() => {
+  'use strict';
+  const GROUPS = [
+    [52, '头部整体', [[3, '前后'], [4, '中庭长度'], [1, '长短'], [2, '宽窄']]], 
+    [1, '额头', [[1, '高度'], [2, '前后'], [4, '宽度'], [5, '长度'], [3, '角度'], [6, '饱满']]], 
+    [41, '额头两侧', [[[1, 8], '高度 / 倾斜', '待校对'], [2, '间距'], [3, '前后'], [[4, 5, 9], '长度 / 宽度 / 外翻', '待校对'], [6, '饱满'], [7, '角度']]], 
+    [2, '印堂', [[1, '高度'], [2, '前后'], [4, '宽度'], [5, '长度'], [3, '角度'], [6, '饱满']]], 
+    [3, '颧骨', [[1, '左右'], [2, '高度'], [3, '前后'], [6, '长度'], [4, '角度'], [5, '饱满']]], 
+    [7, '人中两侧', [[1, '间距'], [2, '高度'], [3, '前后'], [4, '开合'], [5, '角度'], [6, '饱满']]], 
+    [4, '苹果肌', [[1, '间距'], [2, '高度'], [3, '前后'], [4, '角度'], [5, '饱满']]], 
+    [6, '脸颊', [[1, '间距'], [2, '高度'], [3, '前后'], [4, '开合'], [5, '角度'], [6, '饱满']]], 
+    [5, '腮帮', [[1, '间距'], [2, '高度'], [3, '前后'], [4, '角度'], [5, '饱满']]], 
+    [42, '下颌整体', [[1, '前后'], [2, '高度']]], 
+    [10, '下颌', [[1, '间距'], [2, '高度'], [3, '前后'], [7, '宽度'], [8, '厚度'], [5, '倾斜'], [6, '外翻'], [4, '角度'], [9, '饱满']]], 
+    [11, '下颌角', [[1, '间距'], [2, '高度'], [3, '前后'], [7, '宽度'], [8, '厚度'], [5, '倾斜'], [6, '外翻'], [4, '角度'], [9, '饱满']]], 
+    [43, '下巴上方', [[1, '前后'], [2, '高度'], [3, '角度'], [4, '饱满']]], 
+    [44, '下巴整体', [[1, '前后'], [2, '高度'], [3, '角度']]], 
+    [8, '下巴尖', [[1, '高度'], [2, '前后'], [4, '宽度'], [5, '长度'], [3, '角度'], [6, '饱满']]], 
+    [9, '下巴两侧', [[[1, 8], '间距 / 厚度', '待校对'], [2, '高度'], [3, '前后'], [7, '宽度'], [5, '倾斜'], [6, '外翻'], [4, '角度'], [9, '饱满']]], 
+    [45, '眉眼整体', [[1, '高度'], [2, '前后'], [3, '上下间距'], [4, '左右间距']]], 
+    [36, '眉骨整体', [[1, '高度'], [2, '前后'], [3, '角度']]], 
+    [12, '眉头', [[1, '间距'], [2, '高度'], [3, '前后'], [6, '长度'], [7, '宽度'], [5, '外翻'], [4, '角度'], [8, '饱满']]], 
+    [13, '眉中', [[1, '间距'], [2, '高度'], [3, '前后'], [6, '长度'], [7, '宽度'], [5, '外翻'], [4, '角度'], [8, '饱满']]], 
+    [14, '眉尾', [[1, '间距'], [2, '高度'], [3, '前后'], [6, '长度'], [7, '宽度'], [[5, 8], '外翻 / 饱满', '待校对'], [4, '角度']]], 
+    [15, '眼睛整体', [[2, '间距'], [3, '高度'], [4, '前后'], [1, '整体大小'], [5, '旋转'], [7, '外翻'], [6, '角度']]], 
+    [53, '眼球整体', [[1, '内外'], [2, '上下']]], 
+    [16, '上眼皮头', [[1, '间距'], [2, '高度'], [3, '前后'], [7, '长短'], [8, '宽度'], [4, '旋转'], [6, '外翻'], [5, '角度'], [9, '饱满']]], 
+    [17, '上眼皮尾', [[1, '间距'], [2, '高度'], [[3, 9], '前后 / 饱满', '待校对'], [7, '长短'], [8, '宽度'], [4, '旋转'], [6, '外翻'], [5, '角度']]], 
+    [18, '下眼皮', [[1, '间距'], [2, '高度'], [3, '前后'], [7, '长短'], [8, '宽度'], [4, '旋转'], [6, '外翻'], [5, '角度'], [9, '饱满']]], 
+    [19, '内眼角', [[1, '间距'], [2, '高度'], [[3, 9], '前后 / 饱满', '待校对'], [7, '长短'], [8, '宽度'], [4, '旋转'], [6, '外翻'], [5, '角度']]], 
+    [20, '外眼角', [[1, '间距'], [2, '高度'], [3, '前后'], [7, '长短'], [8, '宽度'], [4, '旋转'], [6, '外翻'], [[5, 9], '角度 / 饱满', '待校对']]], 
+    [21, '鼻子整体', [[1, '高度'], [2, '前后'], [4, '左右'], [6, '大小'], [3, '角度']]], 
+    [26, '鼻根', [[1, '高度'], [2, '前后'], [4, '宽度'], [5, '长度'], [3, '角度'], [6, '饱满']]], 
+    [24, '鼻梁上方', [[1, '高度'], [2, '前后'], [8, '左右 / 倾斜', '待校对'], [4, '宽度'], [5, '长度'], [3, '角度'], [6, '饱满']]], 
+    [49, '鼻梁', [[1, '高度'], [2, '前后'], [4, '宽度'], [3, '角度'], [5, '饱满']]], 
+    [50, '鼻梁两侧', [[1, '高度'], [2, '前后'], [4, '间距'], [3, '角度'], [5, '饱满']]], 
+    [46, '鼻头整体', [[1, '高度'], [2, '前后'], [5, '侧移'], [6, '大小'], [4, '倾斜'], [3, '角度']]], 
+    [22, '鼻尖', [[1, '高度'], [2, '前后'], [4, '宽度'], [5, '长度'], [3, '角度'], [6, '饱满']]], 
+    [23, '鼻翼', [[1, '间距'], [2, '高度'], [3, '前后'], [7, '厚度'], [8, '宽度'], [5, '倾斜'], [6, '外翻'], [4, '角度'], [9, '饱满']]], 
+    [25, '鼻底', [[1, '高度'], [2, '前后'], [4, '宽度'], [5, '长度'], [3, '角度'], [6, '饱满']]], 
+    [27, '嘴唇整体', [[1, '高度'], [2, '前后'], [3, '大小']]], 
+    [51, '口轮匝肌', [[1, '间距'], [2, '前后'], [4, '外翻'], [3, '角度'], [5, '饱满']]], 
+    [47, '上唇整体', [[1, '高度'], [2, '前后'], [3, '厚度']]], 
+    [28, '上唇中', [[1, '高度'], [2, '前后'], [4, '宽度'], [7, '厚度'], [3, '角度'], [6, '饱满']]], 
+    [29, '上唇两侧', [[1, '间距'], [2, '高度'], [3, '前后'], [7, '宽度'], [8, '厚度'], [5, '倾斜'], [6, '外翻'], [4, '角度'], [9, '饱满']]], 
+    [48, '下唇整体', [[1, '高度'], [2, '前后'], [3, '厚度']]], 
+    [30, '下唇中', [[1, '高度'], [2, '前后'], [4, '宽度'], [7, '厚度'], [3, '角度'], [6, '饱满']]], 
+    [31, '下唇两侧', [[1, '间距'], [2, '高度'], [3, '前后'], [7, '宽度'], [8, '厚度'], [5, '倾斜'], [6, '外翻'], [4, '角度'], [9, '饱满']]], 
+    [32, '嘴角', [[1, '间距'], [2, '高度'], [3, '前后'], [7, '宽度'], [8, '厚度'], [5, '倾斜'], [6, '外翻'], [4, '角度'], [9, '饱满']]], 
+    [33, '耳朵整体', [[2, '间距'], [3, '高低'], [4, '前后'], [1, '大小'], [6, '外翻'], [7, '倾斜'], [5, '角度']]], 
+    [34, '耳廓', [[1, '间距'], [2, '高低'], [3, '前后'], [4, '角度']]], 
+    [35, '耳垂', [[2, '间距'], [3, '高低'], [4, '前后'], [1, '大小'], [5, '角度']]]
+  ];
+  const groupMap = new Map(GROUPS.map(([id, name], order) => [id, { name, order }]));
+  const DETAIL_CATEGORIES = [
+    ['face','脸型',[52,1,41,2,3,4,6,5,42,10,11,43,44,8,9]],
+    ['eyes','眉眼',[45,36,12,13,14,15,53,16,17,18,19,20]],
+    ['nose','鼻部',[21,26,24,49,50,46,22,23,25]],
+    ['mouth','嘴部',[7,27,51,47,28,29,48,30,31,32]],
+    ['ears','耳部',[33,34,35]]
+  ];
+  const detailCategoryMap = new Map();
+  DETAIL_CATEGORIES.forEach(([key, name, groups], order) => {
+    groups.forEach((group, groupOrder) => {
+      detailCategoryMap.set(group, { key, name, order, groupOrder });
+    });
+  });
+  const bilateral = new Set([41,3,7,4,6,5,10,11,9,45,36,12,13,14,15,53,16,17,18,19,20,50,23,51,29,31,32,33,34,35]);
+  const fieldMap = new Map();
+  for (const [groupId, , fields] of GROUPS) {
+    fields.forEach(([ids, name, reason], order) => {
+      for (const controlId of [].concat(ids)) {
+        fieldMap.set(`${groupId}:${controlId}`, { name, reason: reason || '', order });
+      }
+    });
+  }
+  const verified = new Map([
+    ['21:6', { 60: 85 }],
+    ['46:6', { 35: 50 }],
+    ['22:4', { 35: 50 }],
+    ['23:1', { 35: 50 }],
+    ['23:9', { 35: 50 }]
+  ]);
+  function display(value, id) {
+    const interfaceValue = verified.get(id)?.[value];
+    return interfaceValue === undefined ? String(value) : `${value}（界面${interfaceValue}）`;
+  }
 
-const $=id=>document.getElementById(id);
-$('download-tool').href=location.href.split('#')[0];
-const ui={form:$('form'),a:$('code-a'),b:$('code-b'),submit:$('submit'),result:$('result'),status:$('status'),copy:$('copy-all'),copyText:$('copy-text'),only:$('differences-only'),sort:$('sort-order')};
-let mode='compare',busy=false,currentReport=null;
-const detailOpenState=new Map();
+  const xorKey = new TextEncoder().encode('netease_hex_xor_encrypt_key');
+  const shareSources = [
+    'https://h72.fp.ps.netease.com/file/',
+    'https://h72wxj.fp.ps.netease.com/file/'
+  ];
 
-function element(tag,text,className){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(className)node.className=className;return node;}
-function partOrder(a,b){return a.order-b.order||a.fieldOrder-b.fieldOrder||a.group-b.group||a.control-b.control||Number(a.slot)-Number(b.slot);}
-function flattenRecords(records){
-  const rows=[];
-  for(const record of records){
-    const id=`${record.group}:${record.control}`,group=groupMap.get(record.group),field=fieldMap.get(id);
-    for(const [slot,value] of Object.entries(record.slots)){
-      const side=field&&bilateral.has(record.group)&&(slot==='1'||slot==='2')?(slot==='1'?'左':'右'):`槽位 ${slot}`;
-      rows.push({key:`${id}:${slot}`,id,group:record.group,control:record.control,slot,value,side,part:group?.name||`未对应部位 ${record.group}`,field:field?.name||`参数 ${record.control}`,pending:!field||!!field.reason,order:group?.order??999,fieldOrder:field?.order??999});
+  class DataError extends Error {
+    constructor(message, code = 'INVALID') {
+      super(message);
+      this.code = code;
     }
   }
-  return rows.sort(partOrder);
-}
-function compareRecords(recordsA,recordsB){
-  const a=new Map(flattenRecords(recordsA).map(row=>[row.key,row])),b=new Map(flattenRecords(recordsB).map(row=>[row.key,row]));
-  const stats={rows:[],same:0,changed:0,nonDefaultSame:0,nonDefaultNear:0,onlyA:0,onlyB:0,common:0,total:0};
-  for(const key of new Set([...a.keys(),...b.keys()])){
-    const rowA=a.get(key),rowB=b.get(key),meta=rowA||rowB;
-    const row={...meta,a:rowA?.value,b:rowB?.value,delta:null,absolute:null,state:''};
-    if(!rowA){row.state='missingA';stats.onlyB++;}
-    else if(!rowB){row.state='missingB';stats.onlyA++;}
-    else{
-      row.delta=row.b-row.a;row.absolute=Math.abs(row.delta);stats.common++;
-      row.state=row.absolute===0?'same':'changed';stats[row.state]++;
-      if(row.a!==50&&row.b!==50){
-        if(row.absolute===0)stats.nonDefaultSame++;
-        else if(row.absolute>=1&&row.absolute<=5)stats.nonDefaultNear++;
+
+  function parseRecords(bytes) {
+    const records = [];
+    const seenIds = new Set();
+    let offset = 0;
+
+    // 每条记录：group、control、槽位数，随后是对应数量的 slot、value 字节对。
+    while (offset < bytes.length) {
+      if (offset + 3 > bytes.length) {
+        throw new DataError('数据记录不完整。');
+      }
+
+      const group = bytes[offset++];
+      const control = bytes[offset++];
+      const slotCount = bytes[offset++];
+      if (!slotCount || offset + slotCount * 2 > bytes.length) {
+        throw new DataError('数值区段不完整。');
+      }
+
+      const slots = {};
+      for (let index = 0; index < slotCount; index++) {
+        const slot = String(bytes[offset++]);
+        const value = bytes[offset++];
+        if (Object.hasOwn(slots, slot)) {
+          throw new DataError('存在重复槽位。');
+        }
+        slots[slot] = value;
+      }
+
+      const id = `${group}:${control}`;
+      if (seenIds.has(id)) {
+        throw new DataError('存在重复编号。');
+      }
+      seenIds.add(id);
+      records.push({ group, control, slots });
+      if (records.length > 2048) {
+        throw new DataError('数据量过大。');
       }
     }
-    stats.rows.push(row);
-  }
-  stats.rows.sort(partOrder);stats.total=stats.rows.length;
-  return stats;
-}
-function signed(value){return value>0?`+${value}`:String(value);}
-function comparisonSummary(stats){
-  return `共同项中完全相同 ${stats.same} 项、不同 ${stats.changed} 项；排除含 50 的项后，相同 ${stats.nonDefaultSame} 项、差值在 1～5 的 ${stats.nonDefaultNear} 项。`;
-}
-function detailSections(rows,sortDifferences=false){
-  const categories=new Map();
-  for(const row of rows){
-    const category=detailCategoryMap.get(row.group)||{key:'other',name:'其他',order:DETAIL_CATEGORIES.length,groupOrder:row.group};
-    if(!categories.has(category.key))categories.set(category.key,{...category,parts:new Map(),count:0});
-    const section=categories.get(category.key);section.count++;
-    if(!section.parts.has(row.group))section.parts.set(row.group,{group:row.group,name:row.part,order:category.groupOrder,rows:[]});
-    section.parts.get(row.group).rows.push(row);
-  }
-  return [...categories.values()].sort((a,b)=>a.order-b.order).map(section=>({...section,parts:[...section.parts.values()].sort((a,b)=>a.order-b.order||a.group-b.group).map(part=>({...part,rows:part.rows.sort(sortDifferences?(a,b)=>(b.absolute??-1)-(a.absolute??-1)||partOrder(a,b):partOrder)}))}));
-}
-function detailIndicators(rows){
-  const indicators=new Map();
-  for(const row of rows){
-    if(!indicators.has(row.id))indicators.set(row.id,{...row,key:row.id,slots:[],absolute:null});
-    const indicator=indicators.get(row.id);indicator.slots.push(row);
-    if(row.absolute!==null&&row.absolute!==undefined)indicator.absolute=Math.max(indicator.absolute??0,row.absolute);
-  }
-  return [...indicators.values()].map(row=>({...row,slots:row.slots.sort((a,b)=>Number(a.slot)-Number(b.slot))}));
-}
-function slotCell(rows,column){
-  const cell=element('td'),series=element('div',undefined,'slot-series');
-  for(const row of rows){
-    const delta=column==='delta',value=row[column],missing=value===undefined||value===null;
-    const item=element('span',undefined,`slot-value${delta?' delta-value':''}${missing?' is-missing':''}${delta&&!missing&&value!==0?' is-changed':''}`);
-    item.dataset.key=row.key;
-    const side=row.side==='左'||row.side==='右'?row.side:(rows.length>1||row.slot!=='1'?`槽${row.slot}`:'');
-    if(side)item.append(element('span',side,'slot-label'));
-    item.append(document.createTextNode(missing?'—':delta?signed(value):String(value)));
-    item.setAttribute('aria-label',`${row.side} ${delta?'差值 B 减 A':column==='value'?'原始值':column.toUpperCase()+' 原始值'} ${missing?'未记录':delta?signed(value):value}`);
-    if(!delta&&!missing&&verified.get(row.id)?.[value]!==undefined)item.title=`原始值 ${value}（界面 ${verified.get(row.id)[value]}）`;
-    series.append(item);
-  }
-  cell.append(series);return cell;
-}
-function detailTable(parts,compare){
-  const table=element('table',undefined,'parameter-table'),head=element('thead'),headRow=element('tr');
-  for(const label of compare?['参数','A','B','差值 B−A']:['参数','数值']){const th=element('th',label);th.scope='col';headRow.append(th);}
-  head.append(headRow);table.append(head);
-  for(const part of parts){
-    const body=element('tbody',undefined,'detail-part');body.dataset.group=String(part.group);
-    const partRow=element('tr'),heading=element('th',part.name,'part-heading');heading.colSpan=compare?4:2;heading.scope='rowgroup';partRow.append(heading);body.append(partRow);
-    for(const row of part.rows){
-      const item=element('tr',undefined,'detail-row');item.dataset.key=row.id;
-      const name=element('th',undefined,'parameter-name');name.scope='row';name.title=row.id;name.append(document.createTextNode(row.field));
-      if(row.pending)name.append(element('span','待校对','row-badge'));
-      item.append(name);
-      if(compare)item.append(slotCell(row.slots,'a'),slotCell(row.slots,'b'),slotCell(row.slots,'delta'));
-      else item.append(slotCell(row.slots,'value'));
-      body.append(item);
+
+    if (!records.length) {
+      throw new DataError('未读取到参数。');
     }
-    table.append(body);
+    return records;
   }
-  return table;
-}
-function renderTable(resetOpen=false){
-  if(!currentReport)return;
-  if(resetOpen===true)detailOpenState.clear();
-  else for(const details of document.querySelectorAll('#detail-groups > .detail-category'))detailOpenState.set(details.dataset.category,details.open);
-  const compare=currentReport.mode==='compare',stats=currentReport.stats;
-  const allRows=detailIndicators(compare?stats.rows:currentReport.rows);
-  const rows=compare&&ui.only.checked?allRows.filter(row=>row.slots.some(slot=>slot.state!=='same')):allRows;
-  const sections=detailSections(rows,compare&&ui.sort.value==='difference'),fragment=document.createDocumentFragment();
-  for(const section of sections){
-    const details=element('details',undefined,'detail-category');details.dataset.category=section.key;details.open=detailOpenState.get(section.key)??true;
-    details.addEventListener('toggle',()=>{if(details.isConnected)detailOpenState.set(section.key,details.open);});
-    const heading=element('summary',undefined,'category-summary');heading.append(element('span',section.name),element('span',`${section.count} 个指标`,'category-count'));
-    const content=element('div',undefined,'group-content');
-    content.append(detailTable(section.parts,compare));
-    details.append(heading,content);fragment.append(details);
+
+  async function unpack(encoded) {
+    if (!('DecompressionStream' in window)) {
+      throw new DataError('请使用新版浏览器。');
+    }
+
+    let binary;
+    try {
+      binary = atob(encoded);
+    } catch {
+      throw new DataError('编码不完整。');
+    }
+
+    const bytes = Uint8Array.from(binary, (character, index) =>
+      character.charCodeAt(0) ^ xorKey[index % xorKey.length]
+    );
+    try {
+      const reader = new Blob([bytes])
+        .stream()
+        .pipeThrough(new DecompressionStream('deflate'))
+        .getReader();
+      const chunks = [];
+      let size = 0;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.length;
+        if (size > 1048576) {
+          await reader.cancel();
+          throw new DataError('解包数据过大。');
+        }
+        chunks.push(value);
+      }
+
+      const output = new Uint8Array(size);
+      let offset = 0;
+      for (const chunk of chunks) {
+        output.set(chunk, offset);
+        offset += chunk.length;
+      }
+      return output;
+    } catch (error) {
+      throw error instanceof DataError
+        ? error
+        : new DataError('数据校验失败或格式不支持。');
+    }
   }
-  if(!rows.length)fragment.append(element('p',compare&&ui.only.checked?'无差异':'无参数','empty-details'));
-  $('detail-groups').replaceChildren(fragment);
-  $('table-count').textContent=compare?`显示 ${rows.length} / ${allRows.length} 个指标`:`共 ${allRows.length} 个指标`;
-}
-function renderComparison(report){
-  $('result-title').textContent='对比结果';
-  $('comparison-summary').hidden=false;$('table-controls').hidden=false;
-  $('count-same').textContent=report.stats.same;$('count-changed').textContent=report.stats.changed;
-  $('count-non-default-same').textContent=report.stats.nonDefaultSame;$('count-non-default-near').textContent=report.stats.nonDefaultNear;
-  $('detail-title').textContent='参数明细';
-  ui.only.checked=true;ui.sort.value='difference';renderTable(true);
-}
-function renderSingle(report){
-  $('result-title').textContent='提取结果';
-  $('comparison-summary').hidden=true;$('table-controls').hidden=true;
-  $('detail-title').textContent='参数明细';renderTable(true);
-}
-function appendReportRows(lines,rows,compare){
-  for(const category of detailSections(rows)){
-    lines.push('',`【${category.name}】`);
-    for(const part of category.parts){
-      lines.push(`〔${part.name}〕`,compare?'参数\t侧别 / 槽位\t编号\tA 原始值\tB 原始值\t差值 B−A\t绝对差\t状态':'参数\t侧别 / 槽位\t编号\t原始数值');
-      for(const row of part.rows){
-        const values=[row.field+(row.pending?'（待校对）':''),row.side,row.key];
-        if(compare)values.push(row.a===undefined?'未记录':display(row.a,row.id),row.b===undefined?'未记录':display(row.b,row.id),row.delta===null?'—':signed(row.delta),row.absolute===null?'—':row.absolute,row.state==='same'?'相同':row.state==='changed'?'不同':row.state==='missingA'?'仅 B 有':'仅 A 有');
-        else values.push(display(row.value,row.id));
-        lines.push(values.join('\t'));
+
+  async function decodeShare(share) {
+    if (typeof share?.face_data !== 'string') {
+      throw new DataError('数据格式不正确。');
+    }
+
+    const parts = share.face_data.trim().split('|*|');
+    const format = parts[0]?.slice(0, 3);
+    if (format !== 'R67') {
+      throw new DataError(`仅支持 R67 数据格式，当前为 ${format || '未知'}。`);
+    }
+    if (parts.length !== 5 && parts.length !== 6) {
+      throw new DataError('数据区段不完整。');
+    }
+
+    const records = parseRecords(await unpack(parts[0].slice(3)));
+    for (const part of [parts[1], parts[2], ...parts.slice(4)]) {
+      await unpack(part);
+    }
+    if (!/^\d+$/.test(parts[3])) {
+      throw new DataError('附加标记不完整。');
+    }
+    return records;
+  }
+
+  async function extractShare(input) {
+    const code = input.trim();
+    if (!code) {
+      throw new DataError('请粘贴完整数据。');
+    }
+    if (code.length > 10000) {
+      throw new DataError('输入过长。');
+    }
+
+    const match = code.match(/yysls_facedata_R\d+_([A-Za-z0-9]{24,90})/);
+    if (!match) {
+      throw new DataError('未识别到标准长格式数据。');
+    }
+
+    let lastError;
+    for (const source of shareSources) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 15000);
+      try {
+        const response = await fetch(source + match[1], {
+          signal: controller.signal,
+          credentials: 'omit',
+          referrerPolicy: 'no-referrer',
+          mode: 'cors'
+        });
+        if (!response.ok) {
+          lastError = new DataError(
+            response.status === 404 ? '分享数据已失效。' : '数据来源暂不可用。',
+            'NETWORK'
+          );
+          continue;
+        }
+
+        const text = await response.text();
+        if (text.length > 1048576) {
+          throw new DataError('文件超出预期大小。');
+        }
+        let share;
+        try {
+          share = JSON.parse(text);
+        } catch {
+          throw new DataError('返回数据格式错误。');
+        }
+        return await decodeShare(share);
+      } catch (error) {
+        if (error instanceof DataError && error.code !== 'NETWORK') {
+          throw error;
+        }
+        lastError = error;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    throw lastError instanceof DataError
+      ? lastError
+      : new DataError('网络读取失败，请稍后再试。');
+  }
+
+  const $ = id => document.getElementById(id);
+  $('download-tool').href = location.href.split('#')[0];
+
+  const ui = {
+    form: $('form'),
+    a: $('code-a'),
+    b: $('code-b'),
+    submit: $('submit'),
+    result: $('result'),
+    status: $('status'),
+    copy: $('copy-all'),
+    copyText: $('copy-text'),
+    only: $('differences-only'),
+    sort: $('sort-order')
+  };
+  let mode = 'compare';
+  let busy = false;
+  let currentReport = null;
+  const detailOpenState = new Map();
+
+  function element(tag, text, className) {
+    const node = document.createElement(tag);
+    if (text !== undefined) node.textContent = text;
+    if (className) node.className = className;
+    return node;
+  }
+
+  function partOrder(a, b) {
+    return a.order - b.order
+      || a.fieldOrder - b.fieldOrder
+      || a.group - b.group
+      || a.control - b.control
+      || Number(a.slot) - Number(b.slot);
+  }
+
+  function flattenRecords(records) {
+    const rows = [];
+    for (const record of records) {
+      const id = `${record.group}:${record.control}`;
+      const group = groupMap.get(record.group);
+      const field = fieldMap.get(id);
+
+      for (const [slot, value] of Object.entries(record.slots)) {
+        let side = `槽位 ${slot}`;
+        if (field && bilateral.has(record.group) && (slot === '1' || slot === '2')) {
+          side = slot === '1' ? '左' : '右';
+        }
+        rows.push({
+          key: `${id}:${slot}`,
+          id,
+          group: record.group,
+          control: record.control,
+          slot,
+          value,
+          side,
+          part: group?.name || `未对应部位 ${record.group}`,
+          field: field?.name || `参数 ${record.control}`,
+          pending: !field || !!field.reason,
+          order: group?.order ?? 999,
+          fieldOrder: field?.order ?? 999
+        });
+      }
+    }
+    return rows.sort(partOrder);
+  }
+
+  function compareRecords(recordsA, recordsB) {
+    const rowsA = new Map(flattenRecords(recordsA).map(row => [row.key, row]));
+    const rowsB = new Map(flattenRecords(recordsB).map(row => [row.key, row]));
+    const stats = {
+      rows: [],
+      same: 0,
+      changed: 0,
+      nonDefaultSame: 0,
+      nonDefaultNear: 0,
+      onlyA: 0,
+      onlyB: 0,
+      common: 0,
+      total: 0
+    };
+
+    for (const slotKey of new Set([...rowsA.keys(), ...rowsB.keys()])) {
+      const rowA = rowsA.get(slotKey);
+      const rowB = rowsB.get(slotKey);
+      const row = {
+        ...(rowA || rowB),
+        a: rowA?.value,
+        b: rowB?.value,
+        delta: null,
+        absolute: null,
+        state: ''
+      };
+
+      if (!rowA) {
+        row.state = 'missingA';
+        stats.onlyB++;
+      } else if (!rowB) {
+        row.state = 'missingB';
+        stats.onlyA++;
+      } else {
+        row.delta = row.b - row.a;
+        row.absolute = Math.abs(row.delta);
+        stats.common++;
+
+        if (row.absolute === 0) {
+          row.state = 'same';
+          stats.same++;
+        } else {
+          row.state = 'changed';
+          stats.changed++;
+        }
+        if (row.a !== 50 && row.b !== 50) {
+          if (row.absolute === 0) stats.nonDefaultSame++;
+          else if (row.absolute >= 1 && row.absolute <= 5) stats.nonDefaultNear++;
+        }
+      }
+      stats.rows.push(row);
+    }
+
+    stats.rows.sort(partOrder);
+    stats.total = stats.rows.length;
+    return stats;
+  }
+
+  function signed(value) {
+    return value > 0 ? `+${value}` : String(value);
+  }
+
+  function comparisonSummary(stats) {
+    return `共同项中完全相同 ${stats.same} 项、不同 ${stats.changed} 项；排除含 50 的项后，相同 ${stats.nonDefaultSame} 项、差值在 1～5 的 ${stats.nonDefaultNear} 项。`;
+  }
+
+  function detailSections(rows, sortDifferences = false) {
+    const categories = new Map();
+    for (const row of rows) {
+      const category = detailCategoryMap.get(row.group) || {
+        key: 'other',
+        name: '其他',
+        order: DETAIL_CATEGORIES.length,
+        groupOrder: row.group
+      };
+      if (!categories.has(category.key)) {
+        categories.set(category.key, { ...category, parts: new Map(), count: 0 });
+      }
+      const section = categories.get(category.key);
+      section.count++;
+
+      if (!section.parts.has(row.group)) {
+        section.parts.set(row.group, {
+          group: row.group,
+          name: row.part,
+          order: category.groupOrder,
+          rows: []
+        });
+      }
+      section.parts.get(row.group).rows.push(row);
+    }
+
+    const sections = [...categories.values()].sort((a, b) => a.order - b.order);
+    for (const section of sections) {
+      section.parts = [...section.parts.values()];
+      section.parts.sort((a, b) => a.order - b.order || a.group - b.group);
+      for (const part of section.parts) {
+        if (sortDifferences) {
+          part.rows.sort((a, b) => (b.absolute ?? -1) - (a.absolute ?? -1) || partOrder(a, b));
+        } else {
+          part.rows.sort(partOrder);
+        }
+      }
+    }
+    return sections;
+  }
+
+  function detailIndicators(rows) {
+    // 统计与报告按槽位计算；表格按指标合并左右槽位。
+    const indicators = new Map();
+    for (const row of rows) {
+      if (!indicators.has(row.id)) {
+        indicators.set(row.id, {
+          id: row.id,
+          key: row.id,
+          group: row.group,
+          control: row.control,
+          part: row.part,
+          field: row.field,
+          pending: row.pending,
+          order: row.order,
+          fieldOrder: row.fieldOrder,
+          slots: [],
+          absolute: null
+        });
+      }
+      const indicator = indicators.get(row.id);
+      indicator.slots.push(row);
+      if (row.absolute !== null && row.absolute !== undefined) {
+        indicator.absolute = Math.max(indicator.absolute ?? 0, row.absolute);
+      }
+    }
+
+    for (const indicator of indicators.values()) {
+      indicator.slots.sort((a, b) => Number(a.slot) - Number(b.slot));
+    }
+    return [...indicators.values()];
+  }
+
+  function slotCell(rows, column) {
+    const cell = element('td');
+    const series = element('div', undefined, 'slot-series');
+    const isDelta = column === 'delta';
+    if (rows.length === 1) series.classList.add('single');
+
+    for (const row of rows) {
+      const value = row[column];
+      const missing = value === undefined || value === null;
+      const item = element('span', undefined, 'slot-value');
+      item.dataset.key = row.key;
+      if (missing) item.classList.add('is-missing');
+      if (isDelta) {
+        item.classList.add('delta-value');
+        if (!missing && value !== 0) item.classList.add('is-changed');
+      }
+
+      const isSide = row.side === '左' || row.side === '右';
+      let sideLabel = '';
+      if (isSide) sideLabel = row.side;
+      else if (rows.length > 1 || row.slot !== '1') sideLabel = `槽${row.slot}`;
+      if (!isSide) item.classList.add('extra-slot');
+      if (sideLabel) item.append(element('span', sideLabel, 'slot-label'));
+
+      let valueText = '—';
+      if (!missing) valueText = isDelta ? signed(value) : String(value);
+      item.append(document.createTextNode(valueText));
+
+      let valueLabel = '原始值';
+      if (isDelta) valueLabel = '差值 B 减 A';
+      else if (column !== 'value') valueLabel = `${column.toUpperCase()} 原始值`;
+      item.setAttribute('aria-label', `${row.side} ${valueLabel} ${missing ? '未记录' : valueText}`);
+
+      const interfaceValue = verified.get(row.id)?.[value];
+      if (!isDelta && !missing && interfaceValue !== undefined) {
+        item.title = `原始值 ${value}（界面 ${interfaceValue}）`;
+      }
+      series.append(item);
+    }
+
+    cell.append(series);
+    return cell;
+  }
+
+  function detailTable(parts, compare) {
+    const table = element('table', undefined, 'parameter-table');
+    if (compare) table.classList.add('compare');
+    const head = element('thead');
+    const headRow = element('tr');
+    const labels = compare ? ['参数', 'A', 'B', '差值 B−A'] : ['参数', '数值'];
+    for (const label of labels) {
+      const heading = element('th', label);
+      heading.scope = 'col';
+      headRow.append(heading);
+    }
+    head.append(headRow);
+    table.append(head);
+
+    for (const part of parts) {
+      const body = element('tbody', undefined, 'detail-part');
+      body.dataset.group = String(part.group);
+      const partRow = element('tr');
+      const heading = element('th', part.name, 'part-heading');
+      heading.colSpan = labels.length;
+      heading.scope = 'rowgroup';
+      partRow.append(heading);
+      body.append(partRow);
+
+      for (const row of part.rows) {
+        const item = element('tr', undefined, 'detail-row');
+        item.dataset.key = row.id;
+        const name = element('th', undefined, 'parameter-name');
+        name.scope = 'row';
+        name.title = row.id;
+        name.append(document.createTextNode(row.field));
+        if (row.pending) name.append(element('span', '待校对', 'row-badge'));
+        item.append(name);
+
+        if (compare) {
+          item.append(slotCell(row.slots, 'a'), slotCell(row.slots, 'b'), slotCell(row.slots, 'delta'));
+        } else {
+          item.append(slotCell(row.slots, 'value'));
+        }
+        body.append(item);
+      }
+      table.append(body);
+    }
+    return table;
+  }
+
+  function renderTable(resetOpen = false) {
+    if (!currentReport) return;
+    if (resetOpen === true) {
+      detailOpenState.clear();
+    } else {
+      for (const details of document.querySelectorAll('#detail-groups > .detail-category')) {
+        detailOpenState.set(details.dataset.category, details.open);
+      }
+    }
+
+    const compare = currentReport.mode === 'compare';
+    const sourceRows = compare ? currentReport.stats.rows : currentReport.rows;
+    const allIndicators = detailIndicators(sourceRows);
+    let visibleIndicators = allIndicators;
+    if (compare && ui.only.checked) {
+      visibleIndicators = allIndicators.filter(row => row.slots.some(slot => slot.state !== 'same'));
+    }
+    const sortDifferences = compare && ui.sort.value === 'difference';
+    const sections = detailSections(visibleIndicators, sortDifferences);
+    const fragment = document.createDocumentFragment();
+
+    for (const section of sections) {
+      const details = element('details', undefined, 'detail-category');
+      details.dataset.category = section.key;
+      details.open = detailOpenState.get(section.key) ?? true;
+      details.addEventListener('toggle', () => {
+        if (details.isConnected) detailOpenState.set(section.key, details.open);
+      });
+
+      const heading = element('summary', undefined, 'category-summary');
+      heading.append(
+        element('span', section.name),
+        element('span', `${section.count} 个指标`, 'category-count')
+      );
+      const content = element('div', undefined, 'group-content');
+      content.append(detailTable(section.parts, compare));
+      details.append(heading, content);
+      fragment.append(details);
+    }
+
+    if (!visibleIndicators.length) {
+      const message = compare && ui.only.checked ? '无差异' : '无参数';
+      fragment.append(element('p', message, 'empty-details'));
+    }
+    $('detail-groups').replaceChildren(fragment);
+    $('table-count').textContent = compare
+      ? `显示 ${visibleIndicators.length} / ${allIndicators.length} 个指标`
+      : `共 ${allIndicators.length} 个指标`;
+  }
+
+  function renderComparison(report) {
+    $('result-title').textContent = '对比结果';
+    $('comparison-summary').hidden = false;
+    $('table-controls').hidden = false;
+    $('count-same').textContent = report.stats.same;
+    $('count-changed').textContent = report.stats.changed;
+    $('count-non-default-same').textContent = report.stats.nonDefaultSame;
+    $('count-non-default-near').textContent = report.stats.nonDefaultNear;
+    $('detail-title').textContent = '参数明细';
+    ui.only.checked = true;
+    ui.sort.value = 'difference';
+    renderTable(true);
+  }
+
+  function renderSingle() {
+    $('result-title').textContent = '提取结果';
+    $('comparison-summary').hidden = true;
+    $('table-controls').hidden = true;
+    $('detail-title').textContent = '参数明细';
+    renderTable(true);
+  }
+
+  function appendReportRows(lines, rows, compare) {
+    for (const category of detailSections(rows)) {
+      lines.push('', `【${category.name}】`);
+      for (const part of category.parts) {
+        const columns = compare
+          ? '参数\t侧别 / 槽位\t编号\tA 原始值\tB 原始值\t差值 B−A\t绝对差\t状态'
+          : '参数\t侧别 / 槽位\t编号\t原始数值';
+        lines.push(`〔${part.name}〕`, columns);
+        for (const row of part.rows) {
+          const values = [row.field + (row.pending ? '（待校对）' : ''), row.side, row.key];
+          if (compare) {
+            let stateLabel;
+            if (row.state === 'same') stateLabel = '相同';
+            else if (row.state === 'changed') stateLabel = '不同';
+            else if (row.state === 'missingA') stateLabel = '仅 B 有';
+            else stateLabel = '仅 A 有';
+            values.push(
+              row.a === undefined ? '未记录' : display(row.a, row.id),
+              row.b === undefined ? '未记录' : display(row.b, row.id),
+              row.delta === null ? '—' : signed(row.delta),
+              row.absolute === null ? '—' : row.absolute,
+              stateLabel
+            );
+          } else {
+            values.push(display(row.value, row.id));
+          }
+          lines.push(values.join('\t'));
+        }
       }
     }
   }
-}
-function reportText(report){
-  const lines=['捏脸数据分析报告',`模式：${report.mode==='compare'?'双码对比':'单码提取'}`,`口令码 A：${report.codeA}`];
-  if(report.mode==='compare'){
-    lines.push(`口令码 B：${report.codeB}`,'',comparisonSummary(report.stats),'','【全部参数明细】');
-    appendReportRows(lines,report.stats.rows,true);
-  }else{
-    lines.push('',`共 ${report.recordsA.length} 个参数记录，${report.rows.length} 个槽位。`,'','【全部参数明细】');
-    appendReportRows(lines,report.rows,false);
+
+  function reportText(report) {
+    const lines = [
+      '捏脸数据分析报告',
+      `模式：${report.mode === 'compare' ? '双码对比' : '单码提取'}`,
+      `口令码 A：${report.codeA}`
+    ];
+    if (report.mode === 'compare') {
+      lines.push(`口令码 B：${report.codeB}`, '', comparisonSummary(report.stats), '', '【全部参数明细】');
+      appendReportRows(lines, report.stats.rows, true);
+    } else {
+      lines.push('', `共 ${report.recordsA.length} 个参数记录，${report.rows.length} 个槽位。`, '', '【全部参数明细】');
+      appendReportRows(lines, report.rows, false);
+    }
+    return lines.join('\n');
   }
-  return lines.join('\n');
-}
-function resetResult(){currentReport=null;ui.result.hidden=true;ui.copyText.hidden=true;ui.copyText.value='';ui.status.className='';ui.status.textContent='';}
-function clearFieldStatus(name){$(`status-${name}`).textContent='';$(`status-${name}`).className='field-status';ui[name].removeAttribute('aria-invalid');}
-function setBusy(value){
-  busy=value;
-  for(const control of [ui.a,ui.b,ui.submit,ui.only,ui.sort,ui.copy,$('mode-compare'),$('mode-single')])control.disabled=value;
-  ui.submit.textContent=value?(mode==='compare'?'正在对比…':'正在提取…'):(mode==='compare'?'一键对比':'提取数值');
-}
-function setMode(next){
-  if(busy||mode===next)return;mode=next;resetResult();clearFieldStatus('a');clearFieldStatus('b');
-  $('mode-compare').setAttribute('aria-pressed',String(mode==='compare'));$('mode-single').setAttribute('aria-pressed',String(mode==='single'));
-  $('input-b').hidden=mode==='single';$('input-grid').classList.toggle('single',mode==='single');
-  $('label-a').textContent=mode==='single'?'口令码':'口令码 A';ui.a.placeholder='粘贴口令码…';ui.submit.textContent=mode==='single'?'提取数值':'一键对比';
-}
-$('mode-compare').addEventListener('click',()=>setMode('compare'));
-$('mode-single').addEventListener('click',()=>setMode('single'));
-ui.only.addEventListener('change',renderTable);ui.sort.addEventListener('change',renderTable);
-for(const name of ['a','b'])ui[name].addEventListener('input',()=>{if(busy)return;resetResult();clearFieldStatus(name);});
-async function readInput(name,value){
-  const label=name.toUpperCase(),fieldStatus=$(`status-${name}`);fieldStatus.textContent='读取中…';
-  try{const records=await extractShare(value);fieldStatus.textContent='';return records;}
-  catch(error){fieldStatus.className='field-status error';fieldStatus.textContent=`${label}：${error.message||'读取失败。'}`;ui[name].setAttribute('aria-invalid','true');throw error;}
-}
-ui.form.addEventListener('submit',async event=>{
-  event.preventDefault();if(busy)return;resetResult();clearFieldStatus('a');clearFieldStatus('b');setBusy(true);
-  const codeA=ui.a.value.trim(),codeB=ui.b.value.trim();ui.status.textContent='';
-  try{
-    const responses=await Promise.allSettled(mode==='compare'?[readInput('a',codeA),readInput('b',codeB)]:[readInput('a',codeA)]);
-    if(responses.some(response=>response.status==='rejected')){ui.status.className='error';ui.status.textContent=mode==='compare'?'对比失败':'提取失败';return;}
-    const recordsA=responses[0].value;
-    if(mode==='compare'){
-      const recordsB=responses[1].value;currentReport={mode,codeA,codeB,recordsA,recordsB,stats:compareRecords(recordsA,recordsB)};renderComparison(currentReport);
-      ui.status.textContent='';
-    }else{currentReport={mode,codeA,recordsA,rows:flattenRecords(recordsA)};renderSingle(currentReport);ui.status.textContent='';}
-    ui.result.hidden=false;
-  }catch(error){currentReport=null;ui.result.hidden=true;ui.status.className='error';ui.status.textContent=error.message||'分析失败，请重试。';}
-  finally{setBusy(false);}
-});
-ui.copy.addEventListener('click',async()=>{
-  if(!currentReport||busy)return;const value=reportText(currentReport);ui.copy.disabled=true;
-  const helper=element('textarea');helper.value=value;helper.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';document.body.append(helper);helper.focus();helper.select();
-  let ok=false;try{ok=document.execCommand('copy');}catch{}helper.remove();
-  if(!ok&&navigator.clipboard?.writeText)try{await navigator.clipboard.writeText(value);ok=true;}catch{}
-  ui.copyText.hidden=ok;if(!ok){ui.copyText.value=value;ui.copyText.focus();ui.copyText.select();}
-  ui.status.className=ok?'':'error';ui.status.textContent=ok?'已复制':'请手动复制下方报告';ui.copy.disabled=busy;
-});
+
+  function resetResult() {
+    currentReport = null;
+    ui.result.hidden = true;
+    ui.copyText.hidden = true;
+    ui.copyText.value = '';
+    ui.status.className = '';
+    ui.status.textContent = '';
+  }
+
+  function clearFieldStatus(name) {
+    $(`status-${name}`).textContent = '';
+    $(`status-${name}`).className = 'field-status';
+    ui[name].removeAttribute('aria-invalid');
+  }
+
+  function setBusy(value) {
+    busy = value;
+    const controls = [ui.a, ui.b, ui.submit, ui.only, ui.sort, ui.copy, $('mode-compare'), $('mode-single')];
+    for (const control of controls) control.disabled = value;
+    if (value) ui.submit.textContent = mode === 'compare' ? '正在对比…' : '正在提取…';
+    else ui.submit.textContent = mode === 'compare' ? '一键对比' : '提取数值';
+  }
+
+  function setMode(next) {
+    if (busy || mode === next) return;
+    mode = next;
+    resetResult();
+    clearFieldStatus('a');
+    clearFieldStatus('b');
+    $('mode-compare').setAttribute('aria-pressed', String(mode === 'compare'));
+    $('mode-single').setAttribute('aria-pressed', String(mode === 'single'));
+    $('input-b').hidden = mode === 'single';
+    $('input-grid').classList.toggle('single', mode === 'single');
+    $('label-a').textContent = mode === 'single' ? '口令码' : '口令码 A';
+    ui.a.placeholder = '粘贴口令码…';
+    ui.submit.textContent = mode === 'single' ? '提取数值' : '一键对比';
+  }
+
+  $('mode-compare').addEventListener('click', () => setMode('compare'));
+  $('mode-single').addEventListener('click', () => setMode('single'));
+  ui.only.addEventListener('change', () => renderTable());
+  ui.sort.addEventListener('change', () => renderTable());
+  for (const name of ['a', 'b']) {
+    ui[name].addEventListener('input', () => {
+      if (busy) return;
+      resetResult();
+      clearFieldStatus(name);
+    });
+  }
+
+  async function readInput(name, value) {
+    const fieldStatus = $(`status-${name}`);
+    fieldStatus.textContent = '读取中…';
+    try {
+      const records = await extractShare(value);
+      fieldStatus.textContent = '';
+      return records;
+    } catch (error) {
+      fieldStatus.className = 'field-status error';
+      fieldStatus.textContent = `${name.toUpperCase()}：${error.message || '读取失败。'}`;
+      ui[name].setAttribute('aria-invalid', 'true');
+      throw error;
+    }
+  }
+
+  ui.form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (busy) return;
+    resetResult();
+    clearFieldStatus('a');
+    clearFieldStatus('b');
+    setBusy(true);
+    const codeA = ui.a.value.trim();
+    const codeB = ui.b.value.trim();
+    ui.status.textContent = '';
+
+    try {
+      const requests = [readInput('a', codeA)];
+      if (mode === 'compare') requests.push(readInput('b', codeB));
+      const responses = await Promise.allSettled(requests);
+      if (responses.some(response => response.status === 'rejected')) {
+        ui.status.className = 'error';
+        ui.status.textContent = mode === 'compare' ? '对比失败' : '提取失败';
+        return;
+      }
+
+      const recordsA = responses[0].value;
+      if (mode === 'compare') {
+        const recordsB = responses[1].value;
+        currentReport = { mode, codeA, codeB, recordsA, recordsB, stats: compareRecords(recordsA, recordsB) };
+        renderComparison(currentReport);
+      } else {
+        currentReport = { mode, codeA, recordsA, rows: flattenRecords(recordsA) };
+        renderSingle();
+      }
+      ui.status.textContent = '';
+      ui.result.hidden = false;
+    } catch (error) {
+      currentReport = null;
+      ui.result.hidden = true;
+      ui.status.className = 'error';
+      ui.status.textContent = error.message || '分析失败，请重试。';
+    } finally {
+      setBusy(false);
+    }
+  });
+
+  ui.copy.addEventListener('click', async () => {
+    if (!currentReport || busy) return;
+    const value = reportText(currentReport);
+    ui.copy.disabled = true;
+    const helper = element('textarea');
+    helper.value = value;
+    helper.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+    document.body.append(helper);
+    helper.focus();
+    helper.select();
+
+    let copied = false;
+    try {
+      copied = document.execCommand('copy');
+    } catch {}
+    helper.remove();
+    if (!copied && navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(value);
+        copied = true;
+      } catch {}
+    }
+
+    ui.copyText.hidden = copied;
+    if (!copied) {
+      ui.copyText.value = value;
+      ui.copyText.focus();
+      ui.copyText.select();
+    }
+    ui.status.className = copied ? '' : 'error';
+    ui.status.textContent = copied ? '已复制' : '请手动复制下方报告';
+    ui.copy.disabled = busy;
+  });
 })();
 </script>
 </body>
