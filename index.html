@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f6f4ed">
+<title>捏脸数据分析 · 口令码对比</title>
+<style>
+:root{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color-scheme:light;--bg:#f6f4ed;--surface:#fffefa;--ink:#242922;--muted:#60675d;--line:#d8ddd0;--green:#345b42;--tint:#edf3e9;--yellow:#f5d66f;--orange:#975221;--difference:#fff3df;--missing:#f8e9e7}
+*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.65}main{width:min(1280px,100% - 64px);margin:48px auto 32px}h1,h2,h3,p{margin:0}h1{font-size:clamp(28px,3vw,38px);letter-spacing:-.04em;line-height:1.3}h2{font-size:23px;line-height:1.4}h3{font-size:17px}button,textarea,select,input{font:inherit}button,select{min-height:46px}button{padding:10px 22px;border:1px solid var(--green);border-radius:10px;background:var(--green);color:white;font-weight:650;cursor:pointer}button:hover:enabled{filter:brightness(.95)}button:disabled,select:disabled,input:disabled{opacity:.6;cursor:wait}button.secondary{background:var(--surface);color:var(--ink);border-color:var(--line)}button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #aa7a16;outline-offset:3px}.eyebrow{margin-bottom:10px;color:var(--green);font-size:13px;font-weight:750;letter-spacing:.12em}.subtitle{margin-top:12px;color:var(--muted);max-width:820px}.mode-switch{display:inline-flex;gap:4px;padding:5px;margin-top:28px;background:#e7e9df;border:1px solid var(--line);border-radius:12px}.mode-switch button{min-width:140px;min-height:43px;padding:7px 20px;border:1px solid transparent;border-radius:8px;color:var(--muted);background:transparent}.mode-switch button[aria-pressed="true"]{border-color:var(--line);background:var(--surface);color:var(--ink);box-shadow:0 2px 4px #2633210c}.input-card{margin-top:20px;padding:28px;background:var(--surface);border:1px solid var(--line);border-radius:16px}.input-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.input-grid.single{grid-template-columns:1fr}.input-label{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:17px;font-weight:700}.letter{display:inline-grid;place-items:center;width:29px;height:29px;border-radius:8px;background:var(--tint);color:var(--green);font-size:15px}.letter-b{background:#f6ecd7;color:#825b21}textarea{display:block;width:100%;min-height:140px;padding:16px;border:1px solid #aab4a4;border-radius:10px;background:#fff;color:var(--ink);font:14px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical;overflow-wrap:anywhere}textarea::placeholder{color:#7a8175}textarea[aria-invalid="true"]{border-color:#a94035}.field-status{min-height:24px;margin-top:8px;color:var(--muted);font-size:14px}.field-status.error,.error{color:#a1392f}.form-actions{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:18px}.hint{color:var(--muted);font-size:14px}.primary-action{min-width:180px;background:var(--yellow);border-color:#bd9d3e;color:var(--ink)}#status{min-height:26px;margin:14px 3px;color:var(--muted);font-size:15px}#status.error{color:#a1392f}.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.section-caption{margin-top:6px;color:var(--muted);font-size:14px}.score-layout{display:grid;grid-template-columns:260px 1fr;gap:28px;margin-top:24px}.score-card{display:flex;flex-direction:column;justify-content:center;padding:24px;background:var(--tint);border:1px solid #d5dfce;border-radius:12px}.score-label{font-size:15px;font-weight:650;color:var(--green)}.score-value{margin:10px 0;font-size:clamp(32px,4vw,52px);line-height:1.2;font-weight:750;letter-spacing:-.05em;font-variant-numeric:tabular-nums}.score-note{font-size:13px;color:#465c3e}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.metric{padding:17px 18px;border:1px solid var(--line);border-radius:12px;background:#fff}.metric dt{font-size:14px;color:var(--muted)}.metric dd{margin:5px 0 0;font-size:28px;line-height:1.3;font-weight:700;font-variant-numeric:tabular-nums}.metric small{display:block;margin-top:6px;font-size:12px;color:var(--muted)}dl{margin:0}.summary-text{margin-top:22px;padding:16px 18px;border-left:3px solid #799068;background:#f5f7f0;line-height:1.8}.scope-note{margin-top:14px;font-size:13px;color:var(--muted)}details{margin-top:22px;border-top:1px solid var(--line);padding-top:18px}summary{width:fit-content;cursor:pointer;font-weight:650;color:var(--green)}.calculation{margin:16px 0 0;padding:18px;border:1px solid var(--line);border-radius:10px;background:#f9faf5;white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.85 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--ink)}.detail-panel{margin-top:22px;padding:0;overflow:hidden}.table-top{padding:24px 28px 18px}.table-controls{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin-top:18px}.check-label{display:inline-flex;align-items:center;gap:9px;cursor:pointer}input[type="checkbox"]{width:18px;height:18px;accent-color:var(--green)}.select-label{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}select{padding:8px 32px 8px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}.table-scroll{overflow:auto;max-height:680px;isolation:isolate}table{width:100%;border-collapse:separate;border-spacing:0;text-align:left;font-size:15px}thead th{position:sticky;top:0;background:#edf0e7;color:#4d5747;font-size:14px;font-weight:650;z-index:1;border-top:1px solid var(--line);border-bottom:1px solid #c9d2c0}th,td{padding:15px 18px;vertical-align:middle;border-bottom:1px solid #e4e8dd}thead th:first-child,tbody td:first-child{padding-left:28px}thead th:last-child,tbody td:last-child{padding-right:28px}tbody tr:last-child td{border-bottom:0}tbody tr.changed{background:var(--difference)}tbody tr.missing{background:var(--missing)}tbody tr:hover{box-shadow:inset 4px 0 #9aaa8b}th.numeric,td.numeric{text-align:right;font-variant-numeric:tabular-nums}td.numeric{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:16px}td.delta{font-weight:700}td .row-id{display:block;margin-top:3px;color:var(--muted);font-size:12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}td .calibrated{display:block;margin-top:3px;font-family:inherit;font-size:12px;color:var(--muted)}.row-badge{display:inline-block;margin-left:8px;font-size:12px;color:var(--orange);font-weight:500}.empty-row{text-align:center!important;padding:34px!important;color:var(--muted)}.table-note{margin-top:7px;color:var(--muted);font-size:13px}#copy-text{margin-top:18px;min-height:250px}footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+@media(max-width:900px){main{width:calc(100% - 36px);margin-top:30px}.score-layout{grid-template-columns:220px 1fr;gap:18px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metric{padding:14px}.input-card,.panel{padding:22px}.detail-panel{padding:0}.table-top{padding:22px}.score-card{padding:20px}table{min-width:780px}.single-table{min-width:600px}}
+@media(max-width:620px){main{width:calc(100% - 28px);margin-top:25px}.input-grid{grid-template-columns:1fr;gap:18px}.input-card,.panel{padding:18px}.input-card{margin-top:16px}.detail-panel{padding:0}.table-top{padding:18px}.score-layout{grid-template-columns:1fr}.score-card{padding:20px}.metrics{gap:10px}.metric dd{font-size:25px}.form-actions{align-items:stretch;flex-direction:column;gap:14px}.primary-action{width:100%}.section-heading{align-items:flex-start}.section-heading button{width:100%}.mode-switch{display:flex}.mode-switch button{flex:1;min-width:0;padding:8px 14px}textarea{min-height:115px}.table-controls{gap:13px}.select-label{width:100%;justify-content:space-between}.scope-note{font-size:13px}h2{font-size:21px}.subtitle{font-size:15px}.score-value{font-size:44px}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">FACE DATA ANALYZER</p>
+    <h1>捏脸数据，一眼看清差别</h1>
+    <p class="subtitle">粘贴两个口令码，查看哪些参数相同、哪里有差异，并核对每一步计算。</p>
+  </header>
+  <div class="mode-switch" role="group" aria-label="分析模式">
+    <button id="mode-compare" type="button" aria-pressed="true">双码对比</button>
+    <button id="mode-single" type="button" aria-pressed="false">单码提取</button>
+  </div>
+  <form id="form" class="input-card">
+    <div id="input-grid" class="input-grid">
+      <div>
+        <label class="input-label" for="code-a"><span class="letter" aria-hidden="true">A</span><span id="label-a">口令码 A</span></label>
+        <textarea id="code-a" spellcheck="false" autocomplete="off" placeholder="粘贴第一个完整口令码…" aria-describedby="status-a"></textarea>
+        <p id="status-a" class="field-status" role="status" aria-live="polite"></p>
+      </div>
+      <div id="input-b">
+        <label class="input-label" for="code-b"><span class="letter letter-b" aria-hidden="true">B</span>口令码 B</label>
+        <textarea id="code-b" spellcheck="false" autocomplete="off" placeholder="粘贴第二个完整口令码…" aria-describedby="status-b"></textarea>
+        <p id="status-b" class="field-status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="form-actions">
+      <p class="hint">支持标准长口令码（R67 数据）；短格式暂不支持。</p>
+      <button id="submit" class="primary-action" type="submit">一键对比</button>
+    </div>
+  </form>
+  <p id="status" role="status" aria-live="polite"></p>
+  <section id="result" hidden aria-label="分析结果">
+    <div class="panel">
+      <div class="section-heading">
+        <div><h2 id="result-title">对比结果</h2><p id="result-caption" class="section-caption"></p></div>
+        <button id="copy-all" class="secondary" type="button">复制完整报告</button>
+      </div>
+      <div id="comparison-summary">
+        <div class="score-layout">
+          <div class="score-card">
+            <p class="score-label">参数相似度 · 按一致率</p>
+            <p id="score" class="score-value"></p>
+            <p id="score-note" class="score-note"></p>
+          </div>
+          <dl class="metrics">
+            <div class="metric"><dt>相同参数</dt><dd id="same-count"></dd><small>原始值完全一致的共有槽位</small></div>
+            <div class="metric"><dt>不同参数</dt><dd id="changed-count"></dd><small>原始值不同的共有槽位</small></div>
+            <div class="metric"><dt>缺失参数</dt><dd id="missing-count"></dd><small id="missing-note"></small></div>
+            <div class="metric"><dt>共有参数</dt><dd id="common-count"></dd><small>仅对双方都有的槽位评分</small></div>
+            <div class="metric"><dt>共有覆盖率</dt><dd id="coverage"></dd><small>共有槽位 ÷ 双方槽位并集</small></div>
+            <div class="metric"><dt>平均原始差</dt><dd id="mean-difference"></dd><small>共有槽位绝对差的平均值</small></div>
+          </dl>
+        </div>
+        <p id="summary-text" class="summary-text"></p>
+        <p class="scope-note">每个槽位计为一项，左右分别比较；未记录的参数不补零。相似度反映已解析参数的完全一致程度，不代表外观相似度。界面校准值仅作附注，不参与计算。</p>
+        <details id="calculation-details"><summary>查看相似度计算过程</summary><pre id="calculation" class="calculation"></pre></details>
+      </div>
+      <p id="single-note" class="scope-note" hidden>所有已记录槽位均保留。左右分开显示；其他槽位按原编号展示，未记录参数不补值。已校准的特殊存储值附带界面数值。</p>
+      <textarea id="copy-text" hidden readonly aria-label="完整报告，可手动复制"></textarea>
+    </div>
+    <div class="panel detail-panel">
+      <div class="table-top">
+        <div class="section-heading"><h2 id="detail-title">参数明细</h2><span id="table-count" class="hint"></span></div>
+        <div id="table-controls" class="table-controls">
+          <label class="check-label"><input id="differences-only" type="checkbox" checked>只看差异与缺失</label>
+          <label class="select-label" for="sort-order">排序<select id="sort-order"><option value="difference">绝对差从大到小</option><option value="part">部位顺序</option></select></label>
+        </div>
+        <p id="table-note" class="table-note">差值 = B − A；暖黄色为数值不同，浅红色为单方缺失。未校对名称会标注。</p>
+      </div>
+      <div class="table-scroll"><table id="data-table"><thead id="table-head"></thead><tbody id="table-body"></tbody></table></div>
+    </div>
+  </section>
+  <footer>在线读取分享数据 · 本地解码与计算 · 报告包含计算过程及完整参数，不受明细筛选影响</footer>
+</main>
+<script>
+(()=>{'use strict';
+const GROUPS=[
+[52,'头部整体',[[3,'前后'],[4,'中庭长度'],[1,'长短'],[2,'宽窄']]],
+[1,'额头',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
+[41,'额头两侧',[[[1,8],'高度 / 倾斜','待校对'],[2,'间距'],[3,'前后'],[[4,5,9],'长度 / 宽度 / 外翻','待校对'],[6,'饱满'],[7,'角度']]],
+[2,'印堂',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
+[3,'颧骨',[[1,'左右'],[2,'高度'],[3,'前后'],[6,'长度'],[4,'角度'],[5,'饱满']]],
+[7,'人中两侧',[[1,'间距'],[2,'高度'],[3,'前后'],[4,'开合'],[5,'角度'],[6,'饱满']]],
+[4,'苹果肌',[[1,'间距'],[2,'高度'],[3,'前后'],[4,'角度'],[5,'饱满']]],
+[6,'脸颊',[[1,'间距'],[2,'高度'],[3,'前后'],[4,'开合'],[5,'角度'],[6,'饱满']]],
+[5,'腮帮',[[1,'间距'],[2,'高度'],[3,'前后'],[4,'角度'],[5,'饱满']]],
+[42,'下颌整体',[[1,'前后'],[2,'高度']]],
+[10,'下颌',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'宽度'],[8,'厚度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
+[11,'下颌角',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'宽度'],[8,'厚度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
+[43,'下巴上方',[[1,'前后'],[2,'高度'],[3,'角度'],[4,'饱满']]],
+[44,'下巴整体',[[1,'前后'],[2,'高度'],[3,'角度']]],
+[8,'下巴尖',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
+[9,'下巴两侧',[[[1,8],'间距 / 厚度','待校对'],[2,'高度'],[3,'前后'],[7,'宽度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
+[45,'眉眼整体',[[1,'高度'],[2,'前后'],[3,'上下间距'],[4,'左右间距']]],
+[36,'眉骨整体',[[1,'高度'],[2,'前后'],[3,'角度']]],
+[12,'眉头',[[1,'间距'],[2,'高度'],[3,'前后'],[6,'长度'],[7,'宽度'],[5,'外翻'],[4,'角度'],[8,'饱满']]],
+[13,'眉中',[[1,'间距'],[2,'高度'],[3,'前后'],[6,'长度'],[7,'宽度'],[5,'外翻'],[4,'角度'],[8,'饱满']]],
+[14,'眉尾',[[1,'间距'],[2,'高度'],[3,'前后'],[6,'长度'],[7,'宽度'],[[5,8],'外翻 / 饱满','待校对'],[4,'角度']]],
+[15,'眼睛整体',[[2,'间距'],[3,'高度'],[4,'前后'],[1,'整体大小'],[5,'旋转'],[7,'外翻'],[6,'角度']]],
+[53,'眼球整体',[[1,'内外'],[2,'上下']]],
+[16,'上眼皮头',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'长短'],[8,'宽度'],[4,'旋转'],[6,'外翻'],[5,'角度'],[9,'饱满']]],
+[17,'上眼皮尾',[[1,'间距'],[2,'高度'],[[3,9],'前后 / 饱满','待校对'],[7,'长短'],[8,'宽度'],[4,'旋转'],[6,'外翻'],[5,'角度']]],
+[18,'下眼皮',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'长短'],[8,'宽度'],[4,'旋转'],[6,'外翻'],[5,'角度'],[9,'饱满']]],
+[19,'内眼角',[[1,'间距'],[2,'高度'],[[3,9],'前后 / 饱满','待校对'],[7,'长短'],[8,'宽度'],[4,'旋转'],[6,'外翻'],[5,'角度']]],
+[20,'外眼角',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'长短'],[8,'宽度'],[4,'旋转'],[6,'外翻'],[[5,9],'角度 / 饱满','待校对']]],
+[21,'鼻子整体',[[1,'高度'],[2,'前后'],[4,'左右'],[6,'大小'],[3,'角度']]],
+[26,'鼻根',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
+[24,'鼻梁上方',[[1,'高度'],[2,'前后'],[8,'左右 / 倾斜','待校对'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
+[49,'鼻梁',[[1,'高度'],[2,'前后'],[4,'宽度'],[3,'角度'],[5,'饱满']]],
+[50,'鼻梁两侧',[[1,'高度'],[2,'前后'],[4,'间距'],[3,'角度'],[5,'饱满']]],
+[46,'鼻头整体',[[1,'高度'],[2,'前后'],[5,'侧移'],[6,'大小'],[4,'倾斜'],[3,'角度']]],
+[22,'鼻尖',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
+[23,'鼻翼',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'厚度'],[8,'宽度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
+[25,'鼻底',[[1,'高度'],[2,'前后'],[4,'宽度'],[5,'长度'],[3,'角度'],[6,'饱满']]],
+[27,'嘴唇整体',[[1,'高度'],[2,'前后'],[3,'大小']]],
+[51,'口轮匝肌',[[1,'间距'],[2,'前后'],[4,'外翻'],[3,'角度'],[5,'饱满']]],
+[47,'上唇整体',[[1,'高度'],[2,'前后'],[3,'厚度']]],
+[28,'上唇中',[[1,'高度'],[2,'前后'],[4,'宽度'],[7,'厚度'],[3,'角度'],[6,'饱满']]],
+[29,'上唇两侧',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'宽度'],[8,'厚度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
+[48,'下唇整体',[[1,'高度'],[2,'前后'],[3,'厚度']]],
+[30,'下唇中',[[1,'高度'],[2,'前后'],[4,'宽度'],[7,'厚度'],[3,'角度'],[6,'饱满']]],
+[31,'下唇两侧',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'宽度'],[8,'厚度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
+[32,'嘴角',[[1,'间距'],[2,'高度'],[3,'前后'],[7,'宽度'],[8,'厚度'],[5,'倾斜'],[6,'外翻'],[4,'角度'],[9,'饱满']]],
+[33,'耳朵整体',[[2,'间距'],[3,'高低'],[4,'前后'],[1,'大小'],[6,'外翻'],[7,'倾斜'],[5,'角度']]],
+[34,'耳廓',[[1,'间距'],[2,'高低'],[3,'前后'],[4,'角度']]],
+[35,'耳垂',[[2,'间距'],[3,'高低'],[4,'前后'],[1,'大小'],[5,'角度']]]
+];
+const groupMap=new Map(GROUPS.map(([id,name,fields],order)=>[id,{name,order}]));
+const bilateral=new Set([41,3,7,4,6,5,10,11,9,45,36,12,13,14,15,53,16,17,18,19,20,50,23,51,29,31,32,33,34,35]);
+const fieldMap=new Map();for(const [gid,,fields] of GROUPS)fields.forEach(([ids,name,reason],order)=>{for(const cid of [].concat(ids))fieldMap.set(`${gid}:${cid}`,{name,reason:reason||'',order});});
+const verified=new Map([['21:6',{60:85}],['46:6',{35:50}],['22:4',{35:50}],['23:1',{35:50}],['23:9',{35:50}]]);
+const display=(v,id)=>verified.get(id)?.[v]===undefined?String(v):`${v}（界面${verified.get(id)[v]}）`;
+const key=new TextEncoder().encode('netease_hex_xor_encrypt_key');
+const sources=['https://h72.fp.ps.netease.com/file/','https://h72wxj.fp.ps.netease.com/file/'];
+class DataError extends Error{constructor(s,code='INVALID'){super(s);this.code=code}}
+function parseRecords(bytes){let out=[],seen=new Set(),p=0;while(p<bytes.length){if(p+3>bytes.length)throw new DataError('数据记录不完整。');let group=bytes[p++],control=bytes[p++],count=bytes[p++];if(!count||p+count*2>bytes.length)throw new DataError('数值区段不完整。');let slots={};for(let i=0;i<count;i++){let slot=String(bytes[p++]),v=bytes[p++];if(Object.hasOwn(slots,slot))throw new DataError('存在重复槽位。');slots[slot]=v}let id=`${group}:${control}`;if(seen.has(id))throw new DataError('存在重复编号。');seen.add(id);out.push({group,control,slots});if(out.length>2048)throw new DataError('数据量过大。')}if(!out.length)throw new DataError('未读取到参数。');return out}
+async function unpack(encoded){if(!('DecompressionStream' in window))throw new DataError('请使用新版浏览器。');let binary;try{binary=atob(encoded)}catch{throw new DataError('编码不完整。')}let bytes=Uint8Array.from(binary,(ch,i)=>ch.charCodeAt(0)^key[i%key.length]);try{let reader=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate')).getReader(),chunks=[],size=0;while(true){let {done,value}=await reader.read();if(done)break;size+=value.length;if(size>1048576){await reader.cancel();throw new DataError('解包数据过大。')}chunks.push(value)}let out=new Uint8Array(size),p=0;for(let c of chunks){out.set(c,p);p+=c.length}return out}catch(e){throw e instanceof DataError?e:new DataError('数据校验失败或格式不支持。')}}
+async function decodeShare(share){if(typeof share?.face_data!=='string')throw new DataError('数据格式不正确。');let parts=share.face_data.trim().split('|*|'),fmt=parts[0]?.slice(0,3);if(fmt!=='R67')throw new DataError(`仅支持 R67 数据格式，当前为 ${fmt||'未知'}。`);if(parts.length!==5&&parts.length!==6)throw new DataError('数据区段不完整。');let records=parseRecords(await unpack(parts[0].slice(3)));for(let part of [parts[1],parts[2],...parts.slice(4)])await unpack(part);if(!/^\d+$/.test(parts[3]))throw new DataError('附加标记不完整。');return records}
+async function extractShare(input){let s=input.trim();if(!s)throw new DataError('请粘贴完整数据。');if(s.length>10000)throw new DataError('输入过长。');let match=s.match(/yysls_facedata_R\d+_([A-Za-z0-9]{24,90})/);if(!match)throw new DataError('未识别到标准长格式数据。');let last;for(let source of sources){let controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);try{let res=await fetch(source+match[1],{signal:controller.signal,credentials:'omit',referrerPolicy:'no-referrer',mode:'cors'});if(!res.ok){last=new DataError(res.status===404?'分享数据已失效。':'数据来源暂不可用。','NETWORK');continue}let text=await res.text();if(text.length>1048576)throw new DataError('文件超出预期大小。');let share;try{share=JSON.parse(text)}catch{throw new DataError('返回数据格式错误。')}return await decodeShare(share)}catch(e){if(e instanceof DataError&&e.code!=='NETWORK')throw e;last=e}finally{clearTimeout(timer)}}throw last instanceof DataError?last:new DataError('网络读取失败，请稍后再试。')}
+
+const $=id=>document.getElementById(id);
+const ui={form:$('form'),a:$('code-a'),b:$('code-b'),submit:$('submit'),result:$('result'),status:$('status'),copy:$('copy-all'),copyText:$('copy-text'),only:$('differences-only'),sort:$('sort-order')};
+let mode='compare',busy=false,currentReport=null;
+
+function element(tag,text,className){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(className)node.className=className;return node;}
+function partOrder(a,b){return a.order-b.order||a.fieldOrder-b.fieldOrder||a.group-b.group||a.control-b.control||Number(a.slot)-Number(b.slot);}
+function flattenRecords(records){
+  const rows=[];
+  for(const record of records){
+    const id=`${record.group}:${record.control}`,group=groupMap.get(record.group),field=fieldMap.get(id);
+    for(const [slot,value] of Object.entries(record.slots)){
+      const side=field&&bilateral.has(record.group)&&(slot==='1'||slot==='2')?(slot==='1'?'左':'右'):`槽位 ${slot}`;
+      rows.push({key:`${id}:${slot}`,id,group:record.group,control:record.control,slot,value,side,part:group?.name||`未对应部位 ${record.group}`,field:field?.name||`参数 ${record.control}`,pending:!field||!!field.reason,order:group?.order??999,fieldOrder:field?.order??999});
+    }
+  }
+  return rows.sort(partOrder);
+}
+function compareRecords(recordsA,recordsB){
+  const a=new Map(flattenRecords(recordsA).map(row=>[row.key,row])),b=new Map(flattenRecords(recordsB).map(row=>[row.key,row]));
+  const stats={rows:[],same:0,changed:0,onlyA:0,onlyB:0,common:0,total:0,totalDifference:0,groups:[],countA:a.size,countB:b.size};
+  const groups=new Map();
+  for(const key of new Set([...a.keys(),...b.keys()])){
+    const rowA=a.get(key),rowB=b.get(key),meta=rowA||rowB;
+    const row={...meta,a:rowA?.value,b:rowB?.value,delta:null,absolute:null,state:''};
+    if(!rowA){row.state='missingA';stats.onlyB++;}
+    else if(!rowB){row.state='missingB';stats.onlyA++;}
+    else{
+      row.delta=row.b-row.a;row.absolute=Math.abs(row.delta);stats.common++;stats.totalDifference+=row.absolute;
+      row.state=row.absolute===0?'same':'changed';stats[row.state]++;
+      if(!groups.has(row.group))groups.set(row.group,{group:row.group,part:row.part,sum:0,changed:0});
+      const group=groups.get(row.group);group.sum+=row.absolute;if(row.absolute>0)group.changed++;
+    }
+    stats.rows.push(row);
+  }
+  stats.rows.sort(partOrder);stats.total=stats.rows.length;
+  stats.groups=[...groups.values()].filter(group=>group.sum>0).sort((a,b)=>b.sum-a.sum||a.group-b.group);
+  return stats;
+}
+function percentage(numerator,denominator){
+  if(!denominator)return '无法计算';
+  const value=numerator/denominator*100;
+  if(numerator>0&&value<.005)return '<0.01%';
+  if(numerator<denominator&&value>=99.995)return '>99.99%';
+  return `${value.toFixed(2)}%`;
+}
+function meanDifference(stats){return stats.common?(stats.totalDifference/stats.common).toFixed(3):'无法计算';}
+function signed(value){return value>0?`+${value}`:String(value);}
+function rowLabel(row){return `${row.part} / ${row.field}${row.pending?'（待校对）':''} / ${row.side} [${row.key}]`;}
+function comparisonSummary(stats){
+  if(!stats.common)return `双方没有相同编号的参数槽位，无法计算相似度与平均差。存在 ${stats.onlyA+stats.onlyB} 项单方记录，请核对两份数据。`;
+  let summary;
+  if(!stats.changed)summary=stats.onlyA+stats.onlyB?'所有共有参数的原始值均一致；存在缺失项，因此不代表两份数据完整一致。':'全部已解析参数及槽位均一致。';
+  else{
+    summary=`${stats.common} 个共有参数中，${stats.same} 项完全一致，${stats.changed} 项不同。`;
+    summary+=`按原始绝对差合计，差异最大的部位为${stats.groups.slice(0,3).map(group=>`「${group.part}」（合计 ${group.sum}，${group.changed} 项不同）`).join('、')}。`;
+    summary+='此排序按原始存储单位汇总，不代表外观影响大小。';
+  }
+  if(stats.onlyA+stats.onlyB)summary+=`仅 A 有 ${stats.onlyA} 项，仅 B 有 ${stats.onlyB} 项；这些缺失项未参与一致率和平均差计算。`;
+  return summary;
+}
+function calculationText(stats){
+  const lines=[
+    '1. 对齐规则',
+    '以“部位编号 : 参数编号 : 槽位编号”为唯一键。左右分别计算，每个共有槽位权重相同。',
+    `A 记录 ${stats.countA} 个槽位，B 记录 ${stats.countB} 个槽位；并集 ${stats.total} 项，共有 ${stats.common} 项。`,
+    `共有项 = 相同 ${stats.same} + 不同 ${stats.changed} = ${stats.common}。`,
+    `缺失项 = 仅 A ${stats.onlyA} + 仅 B ${stats.onlyB} = ${stats.onlyA+stats.onlyB}；缺失不补零，不参与评分。`,
+    '',
+    '2. 参数相似度（按完全一致率）',
+    '相似度 = 原始值完全相同的共有槽位数 ÷ 共有槽位数 × 100%',
+    stats.common?`代入：${stats.same} ÷ ${stats.common} × 100% = ${percentage(stats.same,stats.common)}`:'双方没有共有槽位，分母为 0，无法计算。',
+    '',
+    '3. 共有覆盖率',
+    '覆盖率 = 共有槽位数 ÷ 双方槽位并集数 × 100%',
+    `代入：${stats.common} ÷ ${stats.total} × 100% = ${percentage(stats.common,stats.total)}`,
+    '',
+    '4. 平均原始差',
+    '逐项绝对差 = |B 原始值 − A 原始值|；平均原始差 = 共有项绝对差总和 ÷ 共有槽位数。',
+    stats.common?`代入：${stats.totalDifference} ÷ ${stats.common} = ${meanDifference(stats)}（原始存储单位，保留三位小数）`:'双方没有共有槽位，无法计算平均差。',
+    '',
+    '5. 逐项示例（最多 5 个共有槽位，优先展示绝对差最大的项）'
+  ];
+  const examples=stats.rows.filter(row=>row.absolute!==null).sort((a,b)=>b.absolute-a.absolute||partOrder(a,b)).slice(0,5);
+  if(!examples.length)lines.push('无共有槽位。');
+  for(const row of examples)lines.push(`${rowLabel(row)}：A=${row.a}，B=${row.b}，差值=${signed(row.delta)}，绝对差=|${row.b}−${row.a}|=${row.absolute}，${row.state==='same'?'计入相同项':'计入不同项'}。`);
+  const missing=stats.rows.filter(row=>row.absolute===null).slice(0,2);
+  if(missing.length){lines.push('','缺失示例（最多 2 项）：');for(const row of missing)lines.push(`${rowLabel(row)}：${row.a===undefined?'A 未记录':'B 未记录'}，不参与评分。`);}
+  lines.push('','计算范围：仅比较当前工具已解析的参数槽位。口令码其他数据段只做格式校验，不计入相似度。',
+    '已校准的界面数值仅供查看；计算始终使用原始存储值。未校对的中文名称不影响编号对齐。',
+    '共有项全部相同但存在缺失时，一致率仍为 100%，必须同时看覆盖率；这不表示完整数据一致。',
+    '完整明细可核对每个原始值与差值；复制报告始终包含全部槽位。');
+  return lines.join('\n');
+}
+function valueCell(value,id){
+  const cell=element('td',value===undefined?'未记录':String(value),'numeric');
+  if(value!==undefined&&verified.get(id)?.[value]!==undefined)cell.append(element('span',`界面 ${verified.get(id)[value]}`,'calibrated'));
+  return cell;
+}
+function appendMetadata(tr,row){
+  tr.append(element('td',row.part));
+  const parameter=element('td',row.field);
+  if(row.pending)parameter.append(element('span','待校对','row-badge'));
+  parameter.append(element('span',row.key,'row-id'));tr.append(parameter,element('td',row.side));
+}
+function renderTable(){
+  if(!currentReport)return;
+  const compare=currentReport.mode==='compare',stats=currentReport.stats;
+  let rows=compare?stats.rows.slice():currentReport.rows.slice();
+  if(compare&&ui.only.checked)rows=rows.filter(row=>row.state!=='same');
+  if(compare&&ui.sort.value==='difference')rows.sort((a,b)=>(b.absolute??-1)-(a.absolute??-1)||partOrder(a,b));
+  else rows.sort(partOrder);
+  const header=element('tr');
+  for(const [index,title] of (compare?['部位','参数 / 槽位编号','侧别 / 槽位','A 原始值','B 原始值','差值 B − A']:['部位','参数 / 槽位编号','侧别 / 槽位','原始数值']).entries()){
+    const th=element('th',title,index>=3?'numeric':'');th.scope='col';header.append(th);
+  }
+  $('table-head').replaceChildren(header);$('data-table').classList.toggle('single-table',!compare);
+  const fragment=document.createDocumentFragment();
+  for(const row of rows){
+    const tr=element('tr');if(compare&&row.state!=='same')tr.className=row.absolute===null?'missing':'changed';
+    appendMetadata(tr,row);
+    if(compare){tr.append(valueCell(row.a,row.id),valueCell(row.b,row.id),element('td',row.delta===null?'—':signed(row.delta),'numeric delta'));}
+    else tr.append(valueCell(row.value,row.id));
+    fragment.append(tr);
+  }
+  if(!rows.length){
+    const td=element('td',compare&&ui.only.checked?'没有数值差异或缺失项；取消筛选可查看全部参数。':'没有可显示的参数。','empty-row');td.colSpan=compare?6:4;const tr=element('tr');tr.append(td);fragment.append(tr);
+  }
+  $('table-body').replaceChildren(fragment);
+  $('table-count').textContent=compare?`显示 ${rows.length} / ${stats.total} 项`:`共 ${rows.length} 个槽位`;
+}
+function renderComparison(report){
+  const stats=report.stats,missing=stats.onlyA+stats.onlyB;
+  $('result-title').textContent='对比结果';$('result-caption').textContent=`A：${report.recordsA.length} 个参数记录 · B：${report.recordsB.length} 个参数记录 · 按槽位逐项对齐`;
+  $('comparison-summary').hidden=false;$('single-note').hidden=true;$('table-controls').hidden=false;
+  $('score').textContent=percentage(stats.same,stats.common);
+  $('score-note').textContent=!stats.common?'没有共有项，无法评分':missing?'仅针对共有项；存在缺失，请结合覆盖率查看。':stats.changed?'仅统计原始值完全一致的项。':'全部已解析参数及槽位均一致。';
+  $('same-count').textContent=stats.same;$('changed-count').textContent=stats.changed;$('missing-count').textContent=missing;
+  $('missing-note').textContent=`仅 A：${stats.onlyA} · 仅 B：${stats.onlyB}`;$('common-count').textContent=stats.common;
+  $('coverage').textContent=percentage(stats.common,stats.total);$('mean-difference').textContent=stats.common?meanDifference(stats):'—';
+  $('summary-text').textContent=comparisonSummary(stats);$('calculation').textContent=calculationText(stats);
+  $('detail-title').textContent='参数对比明细';$('table-note').textContent='差值 = B − A；暖黄色为数值不同，浅红色为单方缺失。编号包含部位、参数与槽位；未校对名称会标注。';
+  $('calculation-details').open=false;ui.only.checked=true;ui.sort.value='difference';renderTable();
+}
+function renderSingle(report){
+  const known=report.recordsA.filter(record=>{const field=fieldMap.get(`${record.group}:${record.control}`);return field&&!field.reason;}).length;
+  $('result-title').textContent='提取结果';$('result-caption').textContent=`${report.recordsA.length} 个参数记录 · ${report.rows.length} 个槽位 · 已校对 ${known} 个参数 · 待校对 ${report.recordsA.length-known} 个参数`;
+  $('comparison-summary').hidden=true;$('single-note').hidden=false;$('table-controls').hidden=true;
+  $('detail-title').textContent='完整参数明细';$('table-note').textContent='原始存储值逐槽位展示；已校准的界面数值附在下方。未校对名称会标注，未知字段保留原编号。';renderTable();
+}
+function reportText(report){
+  const lines=['捏脸数据分析报告',`模式：${report.mode==='compare'?'双码对比':'单码提取'}`,`口令码 A：${report.codeA}`];
+  if(report.mode==='compare'){
+    const stats=report.stats;lines.push(`口令码 B：${report.codeB}`,'',`参数相似度（按共有槽位完全一致率）：${percentage(stats.same,stats.common)}`,`相同 ${stats.same} 项，不同 ${stats.changed} 项，缺失 ${stats.onlyA+stats.onlyB} 项（仅 A ${stats.onlyA}，仅 B ${stats.onlyB}）`,
+      `共有 ${stats.common} 项，并集 ${stats.total} 项，覆盖率 ${percentage(stats.common,stats.total)}`,`平均原始差：${meanDifference(stats)}`,'',comparisonSummary(stats),'','【相似度计算过程】',calculationText(stats),'','【全部参数明细】','部位\t参数\t侧别 / 槽位\t编号\tA 原始值\tB 原始值\t差值 B−A\t绝对差\t状态');
+    for(const row of stats.rows)lines.push([row.part,row.field+(row.pending?'（待校对）':''),row.side,row.key,row.a===undefined?'未记录':display(row.a,row.id),row.b===undefined?'未记录':display(row.b,row.id),row.delta===null?'—':signed(row.delta),row.absolute===null?'—':row.absolute,row.state==='same'?'相同':row.state==='changed'?'不同':row.state==='missingA'?'仅 B 有':'仅 A 有'].join('\t'));
+  }else{
+    lines.push('',`共 ${report.recordsA.length} 个参数记录，${report.rows.length} 个槽位。`,'界面校准值仅作附注；未记录参数不补值。','','【全部参数明细】','部位\t参数\t侧别 / 槽位\t编号\t原始数值');
+    for(const row of report.rows)lines.push([row.part,row.field+(row.pending?'（待校对）':''),row.side,row.key,display(row.value,row.id)].join('\t'));
+  }
+  return lines.join('\n');
+}
+function resetResult(){currentReport=null;ui.result.hidden=true;ui.copyText.hidden=true;ui.copyText.value='';ui.status.className='';ui.status.textContent='';}
+function clearFieldStatus(name){$(`status-${name}`).textContent='';$(`status-${name}`).className='field-status';ui[name].removeAttribute('aria-invalid');}
+function setBusy(value){
+  busy=value;
+  for(const control of [ui.a,ui.b,ui.submit,ui.only,ui.sort,ui.copy,$('mode-compare'),$('mode-single')])control.disabled=value;
+  ui.submit.textContent=value?(mode==='compare'?'正在对比…':'正在提取…'):(mode==='compare'?'一键对比':'提取数值');
+}
+function setMode(next){
+  if(busy||mode===next)return;mode=next;resetResult();clearFieldStatus('a');clearFieldStatus('b');
+  $('mode-compare').setAttribute('aria-pressed',String(mode==='compare'));$('mode-single').setAttribute('aria-pressed',String(mode==='single'));
+  $('input-b').hidden=mode==='single';$('input-grid').classList.toggle('single',mode==='single');
+  $('label-a').textContent=mode==='single'?'口令码 / 分享数据':'口令码 A';ui.a.placeholder=mode==='single'?'粘贴完整口令码或分享数据…':'粘贴第一个完整口令码…';ui.submit.textContent=mode==='single'?'提取数值':'一键对比';
+}
+$('mode-compare').addEventListener('click',()=>setMode('compare'));
+$('mode-single').addEventListener('click',()=>setMode('single'));
+ui.only.addEventListener('change',renderTable);ui.sort.addEventListener('change',renderTable);
+for(const name of ['a','b'])ui[name].addEventListener('input',()=>{if(busy)return;resetResult();clearFieldStatus(name);});
+async function readInput(name,value){
+  const label=name.toUpperCase(),fieldStatus=$(`status-${name}`);fieldStatus.textContent=`${label}：正在读取与解码…`;
+  try{const records=await extractShare(value);fieldStatus.textContent=`${label}：已读取 ${records.length} 个参数记录。`;return records;}
+  catch(error){fieldStatus.className='field-status error';fieldStatus.textContent=`${label}：${error.message||'读取失败。'}`;ui[name].setAttribute('aria-invalid','true');throw error;}
+}
+ui.form.addEventListener('submit',async event=>{
+  event.preventDefault();if(busy)return;resetResult();clearFieldStatus('a');clearFieldStatus('b');setBusy(true);
+  const codeA=ui.a.value.trim(),codeB=ui.b.value.trim();ui.status.textContent=mode==='compare'?'正在并行读取两份数据…':'正在读取数据…';
+  try{
+    const responses=await Promise.allSettled(mode==='compare'?[readInput('a',codeA),readInput('b',codeB)]:[readInput('a',codeA)]);
+    if(responses.some(response=>response.status==='rejected')){ui.status.className='error';ui.status.textContent=mode==='compare'?'对比未完成，请查看 A / B 输入框下方的读取结果。':'提取未完成，请查看输入框下方的读取结果。';return;}
+    const recordsA=responses[0].value;
+    if(mode==='compare'){
+      const recordsB=responses[1].value;currentReport={mode,codeA,codeB,recordsA,recordsB,stats:compareRecords(recordsA,recordsB)};renderComparison(currentReport);
+      ui.status.textContent=`对比完成：${currentReport.stats.common} 个共有槽位，${currentReport.stats.onlyA+currentReport.stats.onlyB} 个单方缺失项。`;
+    }else{currentReport={mode,codeA,recordsA,rows:flattenRecords(recordsA)};renderSingle(currentReport);ui.status.textContent=`已提取 ${recordsA.length} 个参数记录、${currentReport.rows.length} 个槽位。`;}
+    ui.result.hidden=false;
+  }catch(error){currentReport=null;ui.result.hidden=true;ui.status.className='error';ui.status.textContent=error.message||'分析失败，请重试。';}
+  finally{setBusy(false);}
+});
+ui.copy.addEventListener('click',async()=>{
+  if(!currentReport||busy)return;const value=reportText(currentReport);ui.copy.disabled=true;
+  const helper=element('textarea');helper.value=value;helper.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';document.body.append(helper);helper.focus();helper.select();
+  let ok=false;try{ok=document.execCommand('copy');}catch{}helper.remove();
+  if(!ok&&navigator.clipboard?.writeText)try{await navigator.clipboard.writeText(value);ok=true;}catch{}
+  ui.copyText.hidden=ok;if(!ok){ui.copyText.value=value;ui.copyText.focus();ui.copyText.select();}
+  ui.status.className=ok?'':'error';ui.status.textContent=ok?'已复制完整报告，包含计算过程和全部参数。':'自动复制受限，已展开完整报告供手动复制。';ui.copy.disabled=busy;
+});
+})();
+</script>
+</body>
+</html>
