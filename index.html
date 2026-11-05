@@ -56,48 +56,51 @@ textarea[aria-invalid="true"]{border-color:#ad3446}
 .panel{min-width:0;padding:24px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
 .section-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
 .section-heading button{min-height:40px;padding:8px 18px;font-size:14px}
-.count-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:20px 0 0}
-.count-card{min-width:0;padding:18px;border:1px solid var(--line);border-radius:14px;background:#fafafa}
-.count-card dt{display:flex;flex-direction:column;justify-content:flex-end;min-height:40px;color:#515151;font-size:14px;line-height:1.4}
-.count-scope{color:var(--muted);font-size:12px}
-.count-card dd{display:flex;align-items:baseline;gap:6px;margin:8px 0 0;min-width:0}
-.count-number{min-width:0;font:600 40px/1.2 var(--mono);letter-spacing:-.06em;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
-.count-unit{flex:none;color:var(--muted);font-size:13px}
-.detail-panel{margin-top:24px;padding:0;border:0;background:transparent}
-.table-top{padding:0 2px 16px}
-.table-controls{display:flex;align-items:center;flex-wrap:wrap;gap:18px;margin-top:16px}
-.check-label{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:14px}
-input[type="checkbox"]{width:17px;height:17px;margin:0;accent-color:#74394c}
-.select-label{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px}
-select{min-height:38px;max-width:100%;padding:7px 30px 7px 12px;border:1px solid #d5d5d5;border-radius:9px;background:#f6f6f6;color:var(--ink);font-size:13px}
-#detail-groups{display:grid;gap:16px;min-width:0}
-.detail-category{min-width:0;border:1px solid var(--line);border-radius:18px;background:var(--surface);overflow:hidden}
-.category-summary{display:flex;align-items:center;gap:12px;padding:19px 22px;cursor:pointer;list-style:none;font-size:19px;font-weight:700}
+.count-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:14px 0 0;border:1px solid var(--line);border-radius:8px;background:#fafafa}
+.count-card{min-width:0;padding:10px 16px}
+.count-card+.count-card{border-left:1px solid var(--line)}
+.count-card dt{display:flex;flex-direction:column;justify-content:flex-end;min-height:32px;color:#515151;font-size:12px;line-height:1.4}
+.count-scope{color:var(--muted);font-size:10px}
+.count-card dd{display:flex;align-items:baseline;gap:5px;margin:3px 0 0;min-width:0}
+.count-number{min-width:0;font:600 28px/1.2 var(--mono);letter-spacing:-.05em;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.count-unit{flex:none;color:var(--muted);font-size:11px}
+.detail-panel{margin-top:18px;padding:0;border:0;background:transparent}
+.table-top{padding:0 2px 10px}
+.table-controls{display:flex;align-items:center;flex-wrap:wrap;gap:18px;margin-top:10px}
+.check-label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:12px}
+input[type="checkbox"]{width:15px;height:15px;margin:0;accent-color:#74394c}
+.select-label{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}
+select{min-height:30px;max-width:100%;padding:4px 26px 4px 8px;border:1px solid #d5d5d5;border-radius:5px;background:#f6f6f6;color:var(--ink);font-size:12px}
+#detail-groups{display:grid;gap:10px;min-width:0}
+.detail-category{min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden}
+.category-summary{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;list-style:none;font-size:14px;font-weight:700;background:#f6f6f6}
 .category-summary::-webkit-details-marker{display:none}
-.category-summary:focus-visible{outline-offset:-4px;border-radius:17px}
-.category-summary::after{content:'';width:7px;height:7px;flex:none;border-right:1.5px solid #777;border-bottom:1.5px solid #777;transform:rotate(45deg);margin-right:3px}
+.category-summary:focus-visible{outline-offset:-4px}
+.category-summary::after{content:'';width:6px;height:6px;flex:none;border-right:1.5px solid #777;border-bottom:1.5px solid #777;transform:rotate(45deg);margin-right:2px}
 .detail-category[open]>.category-summary::after{transform:rotate(225deg)}
-.category-count{margin-left:auto;color:var(--muted);font-size:13px;font-weight:400}
-.group-content{padding:0 22px 18px}
+.category-count{margin-left:auto;color:var(--muted);font-size:11px;font-weight:400}
+.group-content{padding:0 12px 8px}
 .detail-part{min-width:0}
-.detail-part+.detail-part{margin-top:18px}
-.part-heading{padding:11px 0;border-top:1px solid var(--line);font-size:16px;font-weight:650}
-.detail-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:22px;padding:13px 0;border-top:1px solid #efefef;min-width:0}
-.row-meta{min-width:0}
-.parameter-name{font-size:16px;font-weight:550;overflow-wrap:anywhere}
-.row-side{display:inline-block;margin-left:9px;color:var(--muted);font-size:12px;font-weight:400;white-space:nowrap}
-.row-id{display:block;margin-top:4px;color:#777;font:11px/1.5 var(--mono);overflow-wrap:anywhere}
-.row-badge{display:inline-block;margin-left:7px;padding:1px 5px;border-radius:5px;background:#eee5e9;color:#6d3c4d;font-size:11px;font-weight:400;vertical-align:middle}
-.row-values{display:flex;align-items:flex-start;gap:12px;flex:none}
-.value-column{width:72px;flex:none;text-align:center}
-.value-label{display:block;margin-bottom:5px;color:var(--muted);font-size:12px;line-height:16px}
-.value-circle{display:inline-grid;place-items:center;width:48px;height:48px;border:1px solid #d6d6d6;border-radius:50%;background:#f6f6f6;color:var(--ink);font:550 20px/1 var(--mono);letter-spacing:-.035em;font-variant-numeric:tabular-nums}
-.detail-row.changed .value-circle{border:2px solid #ce6a88;background:#fff4f7}
-.value-circle.is-missing{border:1.5px dashed #b5a5c8;background:#f8f6fc;color:#766886}
-.calibrated{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:16px;white-space:nowrap}
-.delta-tag{display:inline-grid;place-items:center;min-width:50px;min-height:28px;padding:3px 8px;margin-top:31px;border-radius:8px;background:#f0f0f0;color:#555;font:500 14px/1.4 var(--mono);font-variant-numeric:tabular-nums}
-.detail-row.changed .delta-tag{background:#f9eaf0;color:#7d304a}
-.empty-details{margin:0;padding:28px;border:1px solid var(--line);border-radius:18px;background:var(--surface);color:var(--muted);text-align:center}
+.detail-part+.detail-part{margin-top:6px}
+.parameter-table .part-heading{padding:8px 6px 3px;border-bottom:1px solid var(--line);background:#fafafa;color:#555;font-size:11px;font-weight:600;text-align:left}
+.parameter-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;line-height:1.4}
+.parameter-table th,.parameter-table td{padding:5px 6px;border-bottom:1px solid #eee;text-align:left;vertical-align:middle}
+.parameter-table thead th{padding-top:4px;padding-bottom:4px;background:#fafafa;color:var(--muted);font-size:11px;font-weight:400}
+.parameter-table th:first-child{width:28%}
+.parameter-table td,.parameter-table thead th:not(:first-child){text-align:right}
+.parameter-table tbody th{font-weight:400;overflow-wrap:anywhere}
+.parameter-table tbody tr:last-child th,.parameter-table tbody tr:last-child td{border-bottom:0}
+.parameter-table tbody tr:hover{background:#fafafa}
+.parameter-name{font-size:13px}
+.row-badge{margin-left:4px;color:#888;font-size:10px;white-space:nowrap}
+.slot-series{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:2px 10px}
+.slot-value{display:inline-flex;align-items:baseline;gap:2px;white-space:nowrap;font:400 13px/1.4 var(--mono);font-variant-numeric:tabular-nums}
+.slot-label{font:9px/1.4 system-ui,sans-serif;color:#888}
+.slot-value.is-missing{color:#888}
+.delta-value{color:#999}
+.delta-value.is-changed{padding:0 3px;border-radius:3px;background:#fbe9ef;color:#9a294b;font-weight:700}
+.delta-value.is-changed .slot-label{color:#9a294b}
+.empty-details{margin:0;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--muted);font-size:13px;text-align:center}
 #copy-text{min-height:250px;margin-top:18px}
 .field-status:empty,#status:empty{display:none}
 @media(max-width:920px){
@@ -120,22 +123,30 @@ select{min-height:38px;max-width:100%;padding:7px 30px 7px 12px;border:1px solid
   .panel{padding:18px;border-radius:17px}
   .section-heading{gap:12px}
   .section-heading button{padding:8px 14px;font-size:13px}
-  .count-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
-  .count-card{padding:14px}
-  .count-card dt{font-size:13px;min-height:36px}
-  .count-number{font-size:36px}
-  .count-scope{font-size:11px}
+  .count-cards{gap:0;margin-top:12px}
+  .count-card{padding:8px}
+  .count-card dt{font-size:11px;min-height:30px}
+  .count-number{font-size:24px}
+  .count-scope{font-size:9px}
+  .count-unit{font-size:10px}
   .detail-panel{padding:0}
-  .table-top{padding:0 2px 14px}
-  .category-summary{padding:17px 18px;font-size:18px}
-  .group-content{padding:0 18px 14px}
-  .detail-row{grid-template-columns:minmax(0,1fr);gap:10px;padding:14px 0}
-  .row-values{gap:10px;justify-self:start}
-  .value-column{width:64px}
-  .delta-tag{min-width:48px}
-  .parameter-name{font-size:16px}
-  .table-controls{gap:14px}
-  .select-label{width:100%;justify-content:space-between}
+  .table-top{padding:0 2px 10px}
+  .category-summary{padding:7px 9px;font-size:13px}
+  .group-content{padding:0 5px 5px}
+  .parameter-table .part-heading{padding:7px 4px 3px;font-size:10px}
+  .parameter-table{font-size:12px}
+  .parameter-table th,.parameter-table td{padding:5px 4px}
+  .parameter-table th:first-child{width:26%}
+  .parameter-table thead th{font-size:10px}
+  .parameter-name{font-size:12px}
+  .slot-series{column-gap:5px}
+  .slot-value{font-size:12px;gap:1px}
+  .slot-label{font-size:8px}
+  .delta-value{font-size:11px}
+  .delta-value.is-changed{padding:0 2px}
+  .row-badge{display:block;margin-left:0;font-size:9px}
+  .table-controls{gap:12px}
+
 }
 </style>
 </head>
@@ -327,51 +338,69 @@ function detailSections(rows,sortDifferences=false){
   }
   return [...categories.values()].sort((a,b)=>a.order-b.order).map(section=>({...section,parts:[...section.parts.values()].sort((a,b)=>a.order-b.order||a.group-b.group).map(part=>({...part,rows:part.rows.sort(sortDifferences?(a,b)=>(b.absolute??-1)-(a.absolute??-1)||partOrder(a,b):partOrder)}))}));
 }
-function valueBadge(value,id,label){
-  const column=element('div',undefined,'value-column');
-  column.append(element('span',label,'value-label'));
-  const circle=element('span',value===undefined?'—':String(value),`value-circle${value===undefined?' is-missing':''}`);
-  circle.setAttribute('aria-label',`${label} 原始值 ${value===undefined?'未记录':value}`);column.append(circle);
-  if(value!==undefined&&verified.get(id)?.[value]!==undefined)column.append(element('span',`界面 ${verified.get(id)[value]}`,'calibrated'));
-  return column;
+function detailIndicators(rows){
+  const indicators=new Map();
+  for(const row of rows){
+    if(!indicators.has(row.id))indicators.set(row.id,{...row,key:row.id,slots:[],absolute:null});
+    const indicator=indicators.get(row.id);indicator.slots.push(row);
+    if(row.absolute!==null&&row.absolute!==undefined)indicator.absolute=Math.max(indicator.absolute??0,row.absolute);
+  }
+  return [...indicators.values()].map(row=>({...row,slots:row.slots.sort((a,b)=>Number(a.slot)-Number(b.slot))}));
 }
-function detailRow(row,compare){
-  const item=element('div',undefined,`detail-row${compare?' '+row.state:''}`);item.dataset.key=row.key;
-  const metadata=element('div',undefined,'row-meta'),name=element('div',row.field,'parameter-name');
-  name.append(element('span',row.side,'row-side'));
-  if(row.pending)name.append(element('span','待校对','row-badge'));
-  metadata.append(name,element('span',row.key,'row-id'));
-  const values=element('div',undefined,'row-values');
-  if(compare){
-    values.append(valueBadge(row.a,row.id,'A'),valueBadge(row.b,row.id,'B'));
-    const delta=element('span',row.delta===null?'—':signed(row.delta),'delta-tag');
-    delta.setAttribute('aria-label',row.delta===null?'差值无法计算':`差值 B 减 A ${signed(row.delta)}`);values.append(delta);
-  }else values.append(valueBadge(row.value,row.id,'原始值'));
-  item.append(metadata,values);return item;
+function slotCell(rows,column){
+  const cell=element('td'),series=element('div',undefined,'slot-series');
+  for(const row of rows){
+    const delta=column==='delta',value=row[column],missing=value===undefined||value===null;
+    const item=element('span',undefined,`slot-value${delta?' delta-value':''}${missing?' is-missing':''}${delta&&!missing&&value!==0?' is-changed':''}`);
+    item.dataset.key=row.key;
+    const side=row.side==='左'||row.side==='右'?row.side:(rows.length>1||row.slot!=='1'?`槽${row.slot}`:'');
+    if(side)item.append(element('span',side,'slot-label'));
+    item.append(document.createTextNode(missing?'—':delta?signed(value):String(value)));
+    item.setAttribute('aria-label',`${row.side} ${delta?'差值 B 减 A':column==='value'?'原始值':column.toUpperCase()+' 原始值'} ${missing?'未记录':delta?signed(value):value}`);
+    if(!delta&&!missing&&verified.get(row.id)?.[value]!==undefined)item.title=`原始值 ${value}（界面 ${verified.get(row.id)[value]}）`;
+    series.append(item);
+  }
+  cell.append(series);return cell;
+}
+function detailTable(parts,compare){
+  const table=element('table',undefined,'parameter-table'),head=element('thead'),headRow=element('tr');
+  for(const label of compare?['参数','A','B','差值 B−A']:['参数','数值']){const th=element('th',label);th.scope='col';headRow.append(th);}
+  head.append(headRow);table.append(head);
+  for(const part of parts){
+    const body=element('tbody',undefined,'detail-part');body.dataset.group=String(part.group);
+    const partRow=element('tr'),heading=element('th',part.name,'part-heading');heading.colSpan=compare?4:2;heading.scope='rowgroup';partRow.append(heading);body.append(partRow);
+    for(const row of part.rows){
+      const item=element('tr',undefined,'detail-row');item.dataset.key=row.id;
+      const name=element('th',undefined,'parameter-name');name.scope='row';name.title=row.id;name.append(document.createTextNode(row.field));
+      if(row.pending)name.append(element('span','待校对','row-badge'));
+      item.append(name);
+      if(compare)item.append(slotCell(row.slots,'a'),slotCell(row.slots,'b'),slotCell(row.slots,'delta'));
+      else item.append(slotCell(row.slots,'value'));
+      body.append(item);
+    }
+    table.append(body);
+  }
+  return table;
 }
 function renderTable(resetOpen=false){
   if(!currentReport)return;
   if(resetOpen===true)detailOpenState.clear();
   else for(const details of document.querySelectorAll('#detail-groups > .detail-category'))detailOpenState.set(details.dataset.category,details.open);
   const compare=currentReport.mode==='compare',stats=currentReport.stats;
-  let rows=compare?stats.rows.slice():currentReport.rows.slice();
-  if(compare&&ui.only.checked)rows=rows.filter(row=>row.state!=='same');
+  const allRows=detailIndicators(compare?stats.rows:currentReport.rows);
+  const rows=compare&&ui.only.checked?allRows.filter(row=>row.slots.some(slot=>slot.state!=='same')):allRows;
   const sections=detailSections(rows,compare&&ui.sort.value==='difference'),fragment=document.createDocumentFragment();
   for(const section of sections){
     const details=element('details',undefined,'detail-category');details.dataset.category=section.key;details.open=detailOpenState.get(section.key)??true;
     details.addEventListener('toggle',()=>{if(details.isConnected)detailOpenState.set(section.key,details.open);});
-    const heading=element('summary',undefined,'category-summary');heading.append(element('span',section.name),element('span',`${section.count} 项`,'category-count'));
+    const heading=element('summary',undefined,'category-summary');heading.append(element('span',section.name),element('span',`${section.count} 个指标`,'category-count'));
     const content=element('div',undefined,'group-content');
-    for(const part of section.parts){
-      const block=element('section',undefined,'detail-part');block.dataset.group=String(part.group);block.append(element('h3',part.name,'part-heading'));
-      for(const row of part.rows)block.append(detailRow(row,compare));
-      content.append(block);
-    }
+    content.append(detailTable(section.parts,compare));
     details.append(heading,content);fragment.append(details);
   }
   if(!rows.length)fragment.append(element('p',compare&&ui.only.checked?'无差异':'无参数','empty-details'));
   $('detail-groups').replaceChildren(fragment);
-  $('table-count').textContent=compare?`显示 ${rows.length} / ${stats.total} 项`:`共 ${rows.length} 个槽位`;
+  $('table-count').textContent=compare?`显示 ${rows.length} / ${allRows.length} 个指标`:`共 ${allRows.length} 个指标`;
 }
 function renderComparison(report){
   $('result-title').textContent='对比结果';
